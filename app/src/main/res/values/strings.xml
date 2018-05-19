@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">StarMedia Digital Signage</string>
+    <string name="app_service_check">Check video service</string>
+    <string name="app_service_update">Update information service</string>
+    <string name="app_service_auto_update">Auto update information service</string>
+    <string name="app_service_screen">Check screen status on/off service</string>
+    <string name="app_service_media_play_schedule">Media play schedule service</string>
+    <string name="app_service_face_info">capture face info service</string>
+
+    <string name="app_copy">Powered by OfferMeNow &#174;</string>
+    <string name="app_gps_error">GPS is not enabled. Do you want to go to settings menu?</string>
+    <string name="app_server_error">Could not connection server. Please try again</string>
+    <string name="app_connection_error">Unable to load content. Please check your network connection.</string>
+    <string name="app_lost_connection">Lost connection.</string>
+    <string name="app_wifi_connected">Wi-Fi reconnected.</string>
+
+    <string name="msg_register_susses">Registration successfully.</string>
+
+
+    <string name="lbl_title">Screen Registration</string>
+    <string name="lbl_link">Server Address: </string>
+    <string name="lbl_name">Unique Name: </string>
+    <string name="lbl_pass">Server Password: </string>
+
+    <string name="lbl_hint_link">http://example.com </string>
+    <string name="lbl_hint_name">Server Unique Name</string>
+    <string name="lbl_hint_pass">Server Password </string>
+
+    <string name="btn_register">Register</string>
+
+    <string name="msg_enter_address">Please enter your server address</string>
+    <string name="msg_enter_address_invalid">Your server address invalid</string>
+    <string name="msg_enter_address_exist">Your server address does not exist</string>
+
+    <string name="msg_enter_name">Please enter your name</string>
+    <string name="msg_enter_password">Please enter your password</string>
+
+    <string name="progress_dialog_title_downloading">Downloading...</string>
+    <string name="progress_dialog_title_connecting">Connecting...</string>
+    <string name="progress_dialog_message_prefix_downloading">Downloading file</string>
+    <string name="progress_dialog_message_prefix_connecting">Connecting to</string>
+    <string name="user_message_download_complete">Download complete!</string>
+    <string name="user_message_download_canceled">Download canceled!</string>
+    <string name="error_message_bad_url">Error: Invalid URL!</string>
+    <string name="error_message_file_not_found">Error: File not found!</string>
+    <string name="error_message_general">Error downloading file!</string>
+
+    <string name="face_detection_btn_ok">OK</string>
+    <string name="face_detection_permission_camera_rationale">Access to the camera is needed for detection</string>
+    <string name="face_detection_no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
+    <string name="face_detection_low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+</resources>

@@ -1,0 +1,20 @@
+package vn.digital.signage.android.utils.enumeration;
+
+import android.support.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+import static vn.digital.signage.android.utils.enumeration.MediaType.IMAGE;
+import static vn.digital.signage.android.utils.enumeration.MediaType.VIDEO;
+import static vn.digital.signage.android.utils.enumeration.MediaType.WEB_VIEW;
+
+@Retention(SOURCE)
+@IntDef({IMAGE,
+        WEB_VIEW,
+        VIDEO})
+public @interface MediaType {
+    int IMAGE = 0x01;
+    int WEB_VIEW = 0x02;
+    int VIDEO = 0x04;
+}

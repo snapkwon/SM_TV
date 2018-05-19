@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="c_transparent">#00000000</color>
+
+    <!-- DEFAULT -->
+    <color name="color_default_1">#FF921418</color>
+    <color name="color_default_transparent">#50C5161D</color>
+    <color name="color_default">#FFC5161D</color>
+    <color name="color_default_active">#FFE4040D</color>
+
+    <color name="color_default_background">#FFF9F9F9</color>
+
+    <color name="color_voucher">#FFF9A01E</color>
+    <color name="color_border">#FFFF22</color>
+    <color name="color_black">#FF000000</color>
+    <color name="color_black_transparent">#50000000</color>
+    <color name="color_white">#FFFFFFFF</color>
+    <color name="color_white_transparent">#50FFFFFF</color>
+    <color name="color_grey">#FF666666</color>
+    <color name="color_logging">#77000000</color>
+
+    <color name="color_grey_pin">#FF8F8A8A</color>
+
+    <color name="color_grey_transparent">#30E1E1E1</color>
+    <color name="color_grey_light">#FFE1E1E1</color>
+
+    <color name="color_grey_pick">#FFD7D7D7</color>
+    <color name="color_grey_text">#FFBFBDBD</color>
+    <color name="color_grey_active">#F0E1E1E1</color>
+    <color name="color_yellow_light">#FFF9A01E</color>
+    <color name="color_yellow_active">#F0F9A01E</color>
+
+    <color name="color_transparent">#00000000</color>
+    <color name="color_blue_light">#FF23A1DE</color>
+    <color name="color_blue_transparent">#5023A1DE</color>
+    <!-- MENU -->
+    <color name="color_menu_item">#FFD31C24</color>
+
+    <color name="color_menu_item_group_normal">@color/color_white</color>
+    <color name="color_menu_item_group_selected">#088FDB</color>
+    <color name="color_menu_item_subgroup_normal">#000000</color>
+    <color name="color_menu_item_subgroup_selected">#000000</color>
+
+    <color name="color_menu_divider">#507D7D7D</color>
+    <color name="color_menu_item_subgroup_bg_selected">@color/color_default</color>
+
+    <color name="background">#A0A0A0</color>
+    <color name="listitem_default_color">#A0A0A0</color>
+    <color name="listitem_pressed_color">#FFFFFF</color>
+    <color name="listitem_focused_color">#FFFFFF</color>
+
+    <color name="default_circle_indicator_fill_color">#FFFFFFFF</color>
+    <color name="default_circle_indicator_page_color">#00000000</color>
+    <color name="default_circle_indicator_stroke_color">#FFDDDDDD</color>
+</resources>

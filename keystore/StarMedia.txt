@@ -1,0 +1,26 @@
+Alias name: starmedia
+Creation date: Jun 22, 2016
+Entry type: PrivateKeyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: CN=StarMedia, OU=StarMedia, O=StarMedia, L=HoChiMinh, ST=Unknown, C=VN
+Issuer: CN=StarMedia, OU=StarMedia, O=StarMedia, L=HoChiMinh, ST=Unknown, C=VN
+Serial number: 538a805b
+Valid from: Wed Jun 22 12:43:20 ICT 2016 until: Sun Nov 08 12:43:20 ICT 2043
+Certificate fingerprints:
+	 MD5:  88:9B:7E:A0:2E:75:21:9A:A2:0B:F1:41:4C:BA:68:D9
+	 SHA1: 5B:AD:86:36:36:3A:1C:51:3D:70:E2:89:20:78:01:E9:34:CD:A5:EC
+	 SHA256: F9:03:99:FB:FB:3D:92:F9:92:02:40:07:FA:D4:A4:22:78:BB:11:F9:9A:16:F7:E3:7A:68:C3:7C:0C:56:C7:ED
+	 Signature algorithm name: SHA256withRSA
+	 Version: 3
+
+Extensions: 
+
+#1: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 34 4A A1 AA 15 A8 29 4F   D2 D0 F2 C6 F8 54 D5 16  4J....)O.....T..
+0010: C2 CC 08 CB                                        ....
+]
+]
+

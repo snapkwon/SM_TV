@@ -1,0 +1,75 @@
+<resources>
+
+    <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <!--APP THEME-->
+    <style name="AppTheme" parent="BaseTheme">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:actionBarSize">@dimen/default_toolbar_height</item>
+    </style>
+
+    <!--STARTUP SCREEN THEME-->
+    <style name="AppTheme.StartUpScreen" parent="BaseTheme">
+        <!--<item name="android:excludeFromRecents">true</item>
+        <item name="android:finishOnTaskLaunch">true</item>
+        <item name="android:hardwareAccelerated">true</item>
+        <item name="android:launchMode">singleTop</item>
+        <item name="android:screenOrientation">landscape</item>
+        <item name="android:windowSoftInputMode">stateAlwaysHidden|adjustResize</item>-->
+
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowBackground">@color/c_transparent</item>
+    </style>
+
+    <!--TRANSPARENT STATUS THEME-->
+    <style name="AppTheme.TransparentStatusBar" parent="AppTheme.StartUpScreen" />
+
+    <!-- TEXT VIEW -->
+    <style name="AppTheme.Widget.TextView" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/color_white</item>
+        <item name="android:textSize">@dimen/font_size_medium</item>
+        <item name="android:lineSpacingExtra">@dimen/default_line_spacing_extra</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">-1.5</item>
+        <item name="android:shadowRadius">1.5</item>
+        <item name="android:shadowColor">@color/color_grey</item>
+    </style>
+
+    <!-- EDIT TEXT -->
+    <style name="AppTheme.Widget.EditText" parent="android:Widget.EditText">
+        <item name="android:background">@drawable/bg_edittext</item>
+        <item name="android:textColor">@color/color_white</item>
+        <item name="android:textSize">@dimen/font_size_medium</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">-1.5</item>
+        <item name="android:shadowRadius">1.5</item>
+        <item name="android:shadowColor">@color/color_grey</item>
+    </style>
+
+    <!-- BUTTON -->
+    <style name="AppTheme.Widget.Button" parent="android:Widget.Button">
+        <item name="android:textColor">@color/color_white</item>
+        <item name="android:textSize">@dimen/font_size_medium</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">-1.5</item>
+        <item name="android:shadowRadius">1.5</item>
+        <item name="android:shadowColor">@color/color_grey</item>
+    </style>
+
+    <style name="AppTheme.Widget.Popup" parent="android:Widget.TextView">
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/default_padding_small</item>
+        <item name="android:textColor">@color/color_white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/font_size_medium</item>
+        <item name="android:shadowDx">0.0</item>
+        <item name="android:shadowDy">-1.5</item>
+        <item name="android:shadowRadius">1.5</item>
+        <item name="android:shadowColor">@color/color_grey</item>
+        <item name="android:background">@drawable/bg_border_color_default</item>
+    </style>
+</resources>

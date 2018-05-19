@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="vn.digital.signage.android"
+    android:installLocation="auto"
+    tools:ignore="MissingLeanbackLauncher">
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
+    <!-- REQUIRED to access NETWORK -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.START_STICKY" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <!-- permission required to Wake up screen -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- permission required to use Alarm Manager -->
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+
+
+    <!--face detection-->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
+    <application
+        android:name=".app.App"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme">
+
+        <!--ROOT ACTIVITY-->
+        <activity
+            android:name=".feature.client.RootActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.StartUpScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--TEST ACTIVITIES-->
+        <activity
+            android:name=".feature.client.test.TestActivity"
+            android:theme="@style/AppTheme.TransparentStatusBar">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+
+        <activity
+            android:name=".feature.client.test.facedetection.TestFaceDetectionActivity"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/AppTheme.TransparentStatusBar">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+
+        <!--MAIN ACTIVITY-->
+        <activity
+            android:name=".feature.client.base.MainActivity"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/AppTheme.StartUpScreen" />
+
+        <!--RECEIVER REGION-->
+        <receiver
+            android:name=".feature.device.bootup.DeviceBootUpReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />-->
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <!--SERVICE REGION-->
+        <service
+            android:name=".feature.device.autoupdate.AutoUpdateService"
+            android:enabled="true"
+            android:label="@string/app_service_auto_update" />
+
+        <service
+            android:name=".feature.server.synccurrentplaylist.ServerSyncCurrentPlaylistService"
+            android:enabled="true"
+            android:label="@string/app_service_check" />
+
+        <service
+            android:name=".feature.server.faceinfo.ServerSyncFaceInfoService"
+            android:enabled="true"
+            android:label="@string/app_service_face_info" />
+
+        <service
+            android:name=".feature.server.syncautoplayatdefinedtime.ServerSyncAutoPlayService"
+            android:enabled="true"
+            android:label="@string/app_service_check" />
+
+        <service
+            android:name=".feature.server.updateinfotoserver.UpdateInfoToServerService"
+            android:enabled="true"
+            android:label="@string/app_service_update" />
+
+        <service
+            android:name=".feature.device.bootup.DeviceBootUpService"
+            android:enabled="true"
+            android:label="@string/app_service_update" />
+
+        <service android:name=".feature.device.screenstatechange.ScreenStateChangeService">
+            <intent-filter>
+                <action android:name=".service.CheckScreenStateService" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".feature.server.syncautoplayatdefinedtime.MediaPlayScheduleService"
+            android:enabled="true"
+            android:label="@string/app_service_media_play_schedule" />
+
+        <!-- Config google play services version -->
+        <!--<meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />-->
+
+        <!-- Register the Admin Permission Receiver -->
+        <!--<receiver
+            android:name=".feature.device.admin.SmDeviceAdminReceiver"
+            android:description="@string/app_name"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_sample" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>-->
+
+        <!-- Register the Alarm Receiver -->
+        <receiver android:name=".feature.server.oneofftimer.TimerScreenOnReceiver" />
+        <receiver android:name=".feature.server.oneofftimer.TimerScreenOffReceiver" />
+        <receiver android:name=".feature.device.screenstatechange.ScreenStateChangeReceiver" />
+
+        <receiver
+            android:name=".feature.server.syncautoplayatdefinedtime.MediaPlayScheduleReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name=".receiver.MediaPlayScheduleReceiver" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".feature.device.appreplaced.AppReplacedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".feature.device.startappinspecifictime.StartAppInSpecificTimeReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".feature.device.startappinspecifictime.StartAppInSpecificTimeService" />
+
+        <!-- CRASHLYTICS KEY -->
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="a272f3a854beeaa689853ae84228a22550f505e3" />
+
+        <!-- GOOGLE VISION -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode,face" />
+    </application>
+
+</manifest>
