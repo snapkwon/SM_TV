@@ -2,6 +2,8 @@ package vn.digital.signage.android.api.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class LayoutInfo {
 
     public enum LayoutType {
@@ -34,7 +36,7 @@ public class LayoutInfo {
 
     private DataInfo objData;
 
-    private SourceInfo objSource;
+    private ArrayList<SourceInfo> objSource;
 
     private Integer duration;
 
@@ -221,11 +223,11 @@ public class LayoutInfo {
         this.objData = objData;
     }
 
-    public SourceInfo getObjSource() {
+    public ArrayList<SourceInfo> getObjSource() {
         return objSource;
     }
 
-    public void setObjSource(SourceInfo objSource) {
+    public void setObjSource(ArrayList<SourceInfo> objSource) {
         this.objSource = objSource;
     }
 

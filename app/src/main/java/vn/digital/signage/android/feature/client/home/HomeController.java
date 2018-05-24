@@ -3,9 +3,11 @@ package vn.digital.signage.android.feature.client.home;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -81,8 +83,9 @@ public class HomeController extends BaseController {
                                 info.setObjData(dataInfo);
                             }
                             if (info.getType() == LayoutInfo.LayoutType.FRAME) {
-                                SourceInfo sourceInfo = new Gson().fromJson(info.getSource(), SourceInfo.class);
-                                info.setObjSource(sourceInfo);
+                              ArrayList<SourceInfo> sourceInfos = new Gson().fromJson(info.getSource(), new TypeToken<ArrayList<SourceInfo>>(){
+                              }.getType());
+                                info.setObjSource(sourceInfos);
                             }
                         }
 

@@ -16,6 +16,7 @@ public class SourceInfo {
     private int left;
     private String time;
     private String source;
+    private String hash;
     private String type;
 
     public int getName() {
@@ -80,6 +81,14 @@ public class SourceInfo {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 
     public String getType() {

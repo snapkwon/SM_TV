@@ -18,6 +18,7 @@ import java.util.List;
 
 import vn.digital.signage.android.R;
 import vn.digital.signage.android.api.model.LayoutInfo;
+import vn.digital.signage.android.api.model.SourceInfo;
 import vn.digital.signage.android.app.App;
 import vn.digital.signage.android.app.Config;
 
@@ -87,15 +88,18 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Start download media: %s", layout.getAssets()));
             }
-
-            downloadMultiVideo(layout);
+            if (layout.getType() == LayoutInfo.LayoutType.FRAME) {
+                for (SourceInfo sourceInfo : layout.getObjSource()) {
+                    downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, sourceInfo.getSource()));
+                }
+            } else downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, layout.getAssets()));
         }
 
         // This return causes onPostExecute call on UI thread
         return true;
     }
 
-    private boolean downloadMultiVideo(LayoutInfo layout) {
+    private boolean downloadMultiVideo(String downloadUrl) {
         boolean result = false;
         final URL url;
         final URLConnection conn;
@@ -107,7 +111,6 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
 
         File outFile = null;
         String fileName;
-        final String downloadUrl = String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, layout.getAssets());
 
         try {
             url = new URL(downloadUrl);
