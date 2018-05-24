@@ -21,6 +21,8 @@ public class LayoutInfo {
 
     private DataInfo objData;
 
+    private SourceInfo objSource;
+
     private Integer duration;
 
     @SerializedName("hash")
@@ -204,6 +206,14 @@ public class LayoutInfo {
 
     public void setObjData(DataInfo objData) {
         this.objData = objData;
+    }
+
+    public SourceInfo getObjSource() {
+        return objSource;
+    }
+
+    public void setObjSource(SourceInfo objSource) {
+        this.objSource = objSource;
     }
 
     public String getHash() {

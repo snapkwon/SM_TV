@@ -19,6 +19,7 @@ import vn.digital.signage.android.BuildConfig;
 import vn.digital.signage.android.Constants;
 import vn.digital.signage.android.api.model.DataInfo;
 import vn.digital.signage.android.api.model.LayoutInfo;
+import vn.digital.signage.android.api.model.SourceInfo;
 import vn.digital.signage.android.api.request.AutoPlayRequest;
 import vn.digital.signage.android.api.request.OnOffTimerRequest;
 import vn.digital.signage.android.api.response.AutoPlayResponse;
@@ -79,7 +80,12 @@ public class HomeController extends BaseController {
                                 final DataInfo dataInfo = new Gson().fromJson(info.getData(), DataInfo.class);
                                 info.setObjData(dataInfo);
                             }
+                            if (info.getType() == 5) {
+                                SourceInfo sourceInfo = new Gson().fromJson(info.getSource(), SourceInfo.class);
+                                info.setObjSource(sourceInfo);
+                            }
                         }
+
                         result.setSuccess(true);
                         result.setError("Success");
                         eventBus.post(result);
