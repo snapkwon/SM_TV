@@ -4,6 +4,19 @@ import com.google.gson.annotations.SerializedName;
 
 public class LayoutInfo {
 
+    public enum LayoutType {
+        IMAGE(1),
+        VIDEO(2),
+        FRAME(5),
+        UNKNOWN(-1);
+
+        private int type;
+
+        LayoutType(int type) {
+            this.type = type;
+        }
+    }
+
     private Long id;
 
     @SerializedName("group_id")
@@ -11,7 +24,7 @@ public class LayoutInfo {
 
     private String name;
 
-    private Integer type;
+    private LayoutType type;
 
     private String source;
 
@@ -80,11 +93,11 @@ public class LayoutInfo {
         this.name = name;
     }
 
-    public Integer getType() {
+    public LayoutType getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(LayoutType type) {
         this.type = type;
     }
 

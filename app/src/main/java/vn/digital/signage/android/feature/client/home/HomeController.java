@@ -80,7 +80,7 @@ public class HomeController extends BaseController {
                                 final DataInfo dataInfo = new Gson().fromJson(info.getData(), DataInfo.class);
                                 info.setObjData(dataInfo);
                             }
-                            if (info.getType() == 5) {
+                            if (info.getType() == LayoutInfo.LayoutType.FRAME) {
                                 SourceInfo sourceInfo = new Gson().fromJson(info.getSource(), SourceInfo.class);
                                 info.setObjSource(sourceInfo);
                             }
