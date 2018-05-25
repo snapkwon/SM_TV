@@ -90,7 +90,8 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
             }
             if (layout.getType() == LayoutInfo.LayoutType.FRAME) {
                 for (SourceInfo sourceInfo : layout.getObjSource()) {
-                    downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, sourceInfo.getSource()));
+                    if(sourceInfo.getType() == SourceInfo.SourceType.VIDEO)
+                        downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, sourceInfo.getSource()));
                 }
             } else downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, layout.getAssets()));
         }

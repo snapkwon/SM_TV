@@ -7,6 +7,19 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class SourceInfo {
+
+    public enum SourceType {
+        VIDEO("video"),
+        URL("url"),
+        UNKNOWN("");
+
+        private String type;
+
+        SourceType(String type) {
+            this.type = type;
+        }
+    }
+
     private int name;
     @SerializedName("z-index")
     private int z_index;
@@ -17,7 +30,7 @@ public class SourceInfo {
     private String time;
     private String source;
     private String hash;
-    private String type;
+    private SourceType type;
 
     public int getName() {
         return name;
@@ -91,11 +104,11 @@ public class SourceInfo {
         this.hash = hash;
     }
 
-    public String getType() {
+    public SourceType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(SourceType type) {
         this.type = type;
     }
 }
