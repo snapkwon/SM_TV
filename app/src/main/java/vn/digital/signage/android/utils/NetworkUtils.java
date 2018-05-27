@@ -43,7 +43,7 @@ public class NetworkUtils {
 
         final Logger log = Logger.getLogger(Utils.class);
         log.info(App.getInstance().getResources().getString(R.string.app_connection_error));
-        return true;
+        return false;
     }
 
     /**

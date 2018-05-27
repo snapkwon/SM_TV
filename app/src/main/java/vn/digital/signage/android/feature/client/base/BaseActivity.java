@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.View;
 
 import org.apache.log4j.Logger;
@@ -61,19 +62,19 @@ public abstract class BaseActivity extends FragmentActivity {
         registerScreenStateReceiver();
     }
 
-//    @Override
-//    public boolean onKeyUp(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK
-//                || keyCode == KeyEvent.KEYCODE_HOME) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                || keyCode == KeyEvent.KEYCODE_HOME) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-//    @Override
-//    public void onBackPressed() {
-//    }
+    @Override
+    public void onBackPressed() {
+    }
 
     public void postHistoryToServer() {
         String groupId = "";

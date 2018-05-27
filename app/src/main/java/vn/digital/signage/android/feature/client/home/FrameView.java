@@ -19,6 +19,7 @@ import im.delight.android.webview.AdvancedWebView;
 import vn.digital.signage.android.api.model.SourceInfo;
 import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.feature.client.base.BaseFragment;
+import vn.digital.signage.android.utils.NetworkUtils;
 import vn.digital.signage.android.utils.enumeration.LogLevel;
 import vn.digital.signage.android.utils.enumeration.MediaType;
 import vn.digital.signage.android.utils.hash.HashFileChecker;
@@ -150,11 +151,19 @@ public class FrameView extends RelativeLayout {
             }
             playImageMedia(url, fileName, 0); // play image file
         } else if (Arrays.asList(EXP_WEBVIEW_FILES).contains(exp.toUpperCase())) {
-            if (getChildCount() == 0) {
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-                addView(webView, params);
+            if(NetworkUtils.checkInternetConnection()) {
+                if (getChildCount() == 0) {
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                    addView(webView, params);
+                    playWebViewMedia(url, fileName, 0); // play webview url
+                }
+            }else {
+                if (getChildCount() == 0) {
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                    addView(exoVideoView, params);
+                }
+                playVideoMedia(HomeController.DEFAULT_VIDEO_PATH, fileName, 0); // play video file
             }
-            playWebViewMedia(url, fileName, 0); // play webview url
         } else {
             if (getChildCount() == 0) {
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -218,7 +227,7 @@ public class FrameView extends RelativeLayout {
                 mPlayer.stopExoPlayer();
                 break;
         }
-     removeAllViews();
+        removeAllViews();
     }
 
 }

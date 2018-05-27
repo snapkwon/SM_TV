@@ -275,14 +275,17 @@ public class HomeScreenView {
         for (SourceInfo info : lists) {
             DebugLog.d(info.getSource() + "|");
             String url = "";
-            if (info.getType() == SourceInfo.SourceType.VIDEO)
+            if (info.getType() == SourceInfo.SourceType.VIDEO) {
                 url = getMediaFile(info.getSource());
-            else url = info.getSource();
+                boolean isValidHashFile = mHashFileChecker.checkInvalidAndRemoveFile(url);
+                if (!isValidHashFile)
+                    continue;
+            } else url = info.getSource();
             info.setSource(url);
             FrameView frameLayout = new FrameView(mContext.getActivity(), mContext);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(info.getWidth(), info.getHeight());
-            layoutParams.leftMargin = (int) (info.getLeft());
-            layoutParams.topMargin = (int) (info.getTop());
+            layoutParams.leftMargin = info.getLeft();
+            layoutParams.topMargin = info.getTop();
             frameView.addView(frameLayout, layoutParams);
             frameLayout.playMedia0(info);
             DebugLog.d(info.getLeft() + "|" + info.getTop() + "|" + info.getWidth() + "|" + info.getHeight());
