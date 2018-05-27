@@ -30,6 +30,12 @@
             android:id="@+id/fragment_home_adv_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/fragment_home_adv_frameview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
     </RelativeLayout>
 
     <TextView

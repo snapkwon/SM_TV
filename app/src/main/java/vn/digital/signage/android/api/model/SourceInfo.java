@@ -1,5 +1,7 @@
 package vn.digital.signage.android.api.model;
 
+import android.content.res.Resources;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -9,7 +11,9 @@ import com.google.gson.annotations.SerializedName;
 public class SourceInfo {
 
     public enum SourceType {
+        @SerializedName("video")
         VIDEO("video"),
+        @SerializedName("url")
         URL("url"),
         UNKNOWN("");
 
@@ -28,6 +32,7 @@ public class SourceInfo {
     private int top;
     private int left;
     private String time;
+    @SerializedName("soure")
     private String source;
     private String hash;
     private SourceType type;
@@ -49,7 +54,8 @@ public class SourceInfo {
     }
 
     public int getWidth() {
-        return width;
+
+        return getDpFromUnit(width);
     }
 
     public void setWidth(int width) {
@@ -57,7 +63,7 @@ public class SourceInfo {
     }
 
     public int getHeight() {
-        return height;
+        return getDpFromUnit(height);
     }
 
     public void setHeight(int height) {
@@ -65,7 +71,7 @@ public class SourceInfo {
     }
 
     public int getTop() {
-        return top;
+        return getDpFromUnit(top);
     }
 
     public void setTop(int top) {
@@ -73,15 +79,15 @@ public class SourceInfo {
     }
 
     public int getLeft() {
-        return left;
+        return getDpFromUnit(left);
     }
 
     public void setLeft(int left) {
-       this.left = left;
+        this.left = left;
     }
 
     public String getTime() {
-       return time;
+        return time;
     }
 
     public void setTime(String time) {
@@ -110,5 +116,9 @@ public class SourceInfo {
 
     public void setType(SourceType type) {
         this.type = type;
+    }
+
+    public static int getDpFromUnit(int unit) {
+        return unit * Resources.getSystem().getDisplayMetrics().widthPixels / 1280;
     }
 }

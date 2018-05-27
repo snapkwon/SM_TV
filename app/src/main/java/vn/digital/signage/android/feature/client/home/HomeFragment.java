@@ -16,11 +16,11 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import vn.digital.signage.android.R;
-import vn.digital.signage.android.app.Config;
-import vn.digital.signage.android.app.SMRuntime;
 import vn.digital.signage.android.api.response.AssetsListResponse;
 import vn.digital.signage.android.api.response.AutoPlayResponse;
 import vn.digital.signage.android.api.response.LayoutResponse;
+import vn.digital.signage.android.app.Config;
+import vn.digital.signage.android.app.SMRuntime;
 import vn.digital.signage.android.feature.client.base.BaseFragment;
 import vn.digital.signage.android.feature.server.updateinfotoserver.UpdateInfoToServerEvent;
 import vn.digital.signage.android.utils.UiUtils;
@@ -39,6 +39,8 @@ public class HomeFragment extends BaseFragment {
     SMRuntime runtime;
     @Inject
     HomeController homeController;
+
+    String mUrl;
 
     @Inject
     public HomeFragment() {
@@ -65,10 +67,10 @@ public class HomeFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Bundle bundle = getArguments();
         homeView.initViews(this);
 
         homeController.postVersionCode(String.valueOf(runtime.getRegisterInfo().getId()));
-
     }
 
     public HomeScreenView getHomeView() {

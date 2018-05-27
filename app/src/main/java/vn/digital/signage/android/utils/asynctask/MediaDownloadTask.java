@@ -85,15 +85,23 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
         }
 
         for (LayoutInfo layout : lists) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format("Start download media: %s", layout.getAssets()));
-            }
             if (layout.getType() == LayoutInfo.LayoutType.FRAME) {
                 for (SourceInfo sourceInfo : layout.getObjSource()) {
                     if(sourceInfo.getType() == SourceInfo.SourceType.VIDEO)
+                    {
+                        if (log.isDebugEnabled()) {
+                            log.debug(String.format("Start download media: %s", sourceInfo.getSource()));
+                        }
                         downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, sourceInfo.getSource()));
+                    }
                 }
-            } else downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, layout.getAssets()));
+            } else {
+
+                if (log.isDebugEnabled()) {
+                    log.debug(String.format("Start download media: %s", layout.getAssets()));
+                }
+                downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, layout.getAssets()));
+            }
         }
 
         // This return causes onPostExecute call on UI thread

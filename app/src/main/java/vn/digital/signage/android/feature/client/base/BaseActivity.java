@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.view.KeyEvent;
 import android.view.View;
 
 import org.apache.log4j.Logger;
@@ -62,19 +61,19 @@ public abstract class BaseActivity extends FragmentActivity {
         registerScreenStateReceiver();
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK
-                || keyCode == KeyEvent.KEYCODE_HOME) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+//    @Override
+//    public boolean onKeyUp(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK
+//                || keyCode == KeyEvent.KEYCODE_HOME) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 
-    @Override
-    public void onBackPressed() {
-    }
+//    @Override
+//    public void onBackPressed() {
+//    }
 
     public void postHistoryToServer() {
         String groupId = "";
@@ -133,6 +132,14 @@ public abstract class BaseActivity extends FragmentActivity {
 
     public void switchFragment(Fragment f, String fragmentTag, boolean isBackStack) {
         mFragmentHelper.attachFragment(R.id.id_container, f, fragmentTag, isBackStack);
+    }
+
+    public void switchChildFragment(Fragment f, String fragmentTag, int id) {
+        mFragmentHelper.attachFragment(id, f, fragmentTag, false);
+    }
+
+    public void removeFragment( int id) {
+        mFragmentHelper.removeCurrentFragment(mFragmentHelper.getFragmentManager().findFragmentById(id));
     }
 
     public void registerScreenStateReceiver() {

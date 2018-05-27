@@ -13,4 +13,6 @@ public interface IPlayer {
      * @param urlIndex the url index
      */
     void playWithExoPlayer(String url, final String fileName, int urlIndex);
+
+    void stopExoPlayer();
 }

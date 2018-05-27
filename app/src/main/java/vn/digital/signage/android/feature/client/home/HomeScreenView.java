@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import im.delight.android.webview.AdvancedWebView;
 import vn.digital.signage.android.Constants;
 import vn.digital.signage.android.R;
 import vn.digital.signage.android.api.model.LayoutInfo;
+import vn.digital.signage.android.api.model.SourceInfo;
 import vn.digital.signage.android.api.response.LayoutResponse;
 import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.app.SMRuntime;
@@ -41,6 +43,7 @@ import vn.digital.signage.android.feature.client.home.face.FaceDetectionFragment
 import vn.digital.signage.android.feature.client.home.face.logic.FaceDetectionImpl;
 import vn.digital.signage.android.feature.client.home.face.logic.IFaceDetection;
 import vn.digital.signage.android.utils.DateUtils;
+import vn.digital.signage.android.utils.DebugLog;
 import vn.digital.signage.android.utils.FileUtils;
 import vn.digital.signage.android.utils.NetworkUtils;
 import vn.digital.signage.android.utils.asynctask.AsyncTaskManager;
@@ -59,9 +62,10 @@ public class HomeScreenView {
     private static final String TAG = HomeScreenView.class.getSimpleName();
     private static final String[] SUPPORT_FILES = new String[]{"MP4", "MP3", "JPG", "JPEG", "PNG"};
     private static final String[] EXP_IMAGES_FILES = new String[]{"JPG", "JPEG", "PNG"};
-    private static final String[] EXP_WEBVIEW_FILES = new String[]{"HTML", "HTM"};
+    private static final String[] EXP_WEBVIEW_FILES = new String[]{"HTML", "HTM", "ASPX"};
 
     private final Logger log = Logger.getLogger(HomeScreenView.class);
+    public static final String KEY_URL = "KEY_URL";
     @Inject
     HomeController homeController;
     @Inject
@@ -72,14 +76,24 @@ public class HomeScreenView {
     ImageView imageView;
     @InjectView(R.id.fragment_home_adv_webview)
     AdvancedWebView webView;
+    @InjectView(R.id.fragment_home_adv_frameview)
+    RelativeLayout frameView;
     @InjectView(R.id.fragment_home_adv_debug)
     TextView txtDebug;
 
     private FaceDetectionFragment faceDetectionFragment;
 
     private int mCurrentMediaIndex = 0;
+
+    public void setmCurrentMediaIndex(int mCurrentMediaIndex) {
+        this.mCurrentMediaIndex = mCurrentMediaIndex;
+        if (mCurrentMediaIndex == 0)
+            DebugLog.d("current media index " + mCurrentMediaIndex);
+    }
+
     private long mCurrentImageStartTimeInMillis = 0;
-    private ImageCountDownTimer mCountDownTimer;
+    private BaseCountDownTimer mCountDownTimer;
+    //    private FrameCountDownTimer mFrameTimer;
     private HomeFragment mContext;
     private AsyncTaskManager taskManager;
     private Handler mHandler = new Handler();
@@ -226,7 +240,7 @@ public class HomeScreenView {
 
     public void playDefaultVideo(int index) {
         // reset current media index
-        mCurrentMediaIndex = index;
+        setmCurrentMediaIndex(index);
         final List<String> links = getMediaFileList();
         playDefaultAdvertiseMedia(links);
     }
@@ -257,6 +271,40 @@ public class HomeScreenView {
             playVideoMedia(url, fileName, currentUrlIndex); // play video file
     }
 
+    private void playSelectedFrame(List<SourceInfo> lists) {
+        for (SourceInfo info : lists) {
+            DebugLog.d(info.getSource() + "|");
+            String url = "";
+            if (info.getType() == SourceInfo.SourceType.VIDEO)
+                url = getMediaFile(info.getSource());
+            else url = info.getSource();
+            info.setSource(url);
+            FrameView frameLayout = new FrameView(mContext.getActivity(), mContext);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(info.getWidth(), info.getHeight());
+            layoutParams.leftMargin = (int) (info.getLeft());
+            layoutParams.topMargin = (int) (info.getTop());
+            frameView.addView(frameLayout, layoutParams);
+            frameLayout.playMedia0(info);
+            DebugLog.d(info.getLeft() + "|" + info.getTop() + "|" + info.getWidth() + "|" + info.getHeight());
+
+        }
+
+        updateMediaVisibility(MediaType.FRAME);
+
+        long imageDuration = getImageDurationFromIndex(mCurrentMediaIndex);
+        // setup start time of the image
+        mCurrentImageStartTimeInMillis = System.currentTimeMillis();
+
+        // destroy current count down timer
+        if (mCountDownTimer != null && mCountDownTimer.isRunning()) {
+            mCountDownTimer.cancel();
+            mCountDownTimer = null;
+        }
+
+        mCountDownTimer = new FrameCountDownTimer(imageDuration, 1000, "");
+        mCountDownTimer.start();
+    }
+
     private void playSelectedMediaFile(List<String> lists) {
         List<String> mMediaList = new ArrayList<>();
 
@@ -267,6 +315,19 @@ public class HomeScreenView {
 
         mMediaList.addAll(lists);
 
+        DebugLog.d("on play index " + mCurrentMediaIndex + " |" + mMediaList.get(mCurrentMediaIndex));
+
+        final LayoutResponse response = runtime.getLayoutResponse();
+        if (response != null && !response.getLayouts().isEmpty()) {
+            final List<LayoutInfo> listLayouts = response.getLayouts();
+            if (listLayouts.get(mCurrentMediaIndex).getType() == LayoutInfo.LayoutType.FRAME) {
+                playSelectedFrame(listLayouts.get(mCurrentMediaIndex).getObjSource());
+
+                setmCurrentMediaIndex((mCurrentMediaIndex + 1) % mMediaList.size());
+                return;
+            }
+        }
+        DebugLog.d("on play media " + mCurrentMediaIndex + " |" + mMediaList.get(mCurrentMediaIndex));
         if (!mMediaList.isEmpty() && mMediaList.size() > mCurrentMediaIndex) {
             final String url = mMediaList.get(mCurrentMediaIndex);
             final int currentUrlIndex = mCurrentMediaIndex;
@@ -306,10 +367,8 @@ public class HomeScreenView {
                     playVideoMedia(url, fileName, currentUrlIndex); // play video file
                 }
 
-                // increase current media index
-                mCurrentMediaIndex++;
-                // if current media index is equals to list size, then reset it to 0
-                mCurrentMediaIndex = mCurrentMediaIndex % mMediaList.size();
+
+                setmCurrentMediaIndex((mCurrentMediaIndex + 1) % mMediaList.size());
             } else {
                 playDefaultVideo(mCurrentMediaIndex);
                 // verify download video
@@ -326,6 +385,12 @@ public class HomeScreenView {
         mPlayer.playWithExoPlayer(url, fileName, urlIndex);
 
         updateMediaVisibility(MediaType.VIDEO);
+
+        // destroy current count down timer
+        if (mCountDownTimer != null && mCountDownTimer.isRunning()) {
+            mCountDownTimer.cancel();
+            mCountDownTimer = null;
+        }
     }
 
     private void playImageMedia(String url, String fileName, int urlIndex) {
@@ -410,6 +475,20 @@ public class HomeScreenView {
         }
     }
 
+    private String getMediaFile(String source) {
+        final File[] videos = getListOfSdCardFiles();
+
+        if (videos == null) {
+            return "";
+        }
+        for (int i = 0; i < videos.length; i++) {
+            final File f = videos[i];
+            if (f.getAbsolutePath().contains(source))
+                return f.getAbsolutePath();
+        }
+        return "";
+    }
+
     private List<String> getMediaFileList() {
 
         final File[] videos = getListOfSdCardFiles();
@@ -427,11 +506,14 @@ public class HomeScreenView {
         if (response != null && !response.getLayouts().isEmpty()) {
             final List<LayoutInfo> listLayouts = response.getLayouts();
             for (LayoutInfo l : listLayouts) {
-                for (String s : links) {
-                    if (s.contains(l.getAssets())) {
-                        listLinks.add(s);
+                if (l.getType() == LayoutInfo.LayoutType.FRAME) {
+                    listLinks.add("FRAME");
+                } else
+                    for (String s : links) {
+                        if (s.contains(l.getAssets())) {
+                            listLinks.add(s);
+                        }
                     }
-                }
             }
         }
         return listLinks;
@@ -467,9 +549,19 @@ public class HomeScreenView {
         final List<String> files = new ArrayList<>();
 
         for (LayoutInfo info : lists) {
-            final String exp = info.getAssets().substring(info.getAssets().lastIndexOf('.') + 1);
-            if (Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
-                files.add(info.getAssets());
+            if (info.getType() == LayoutInfo.LayoutType.FRAME) {
+                for (SourceInfo sourceInfo : info.getObjSource()) {
+
+                    final String exp = sourceInfo.getSource().substring(sourceInfo.getSource().lastIndexOf('.') + 1);
+                    if (Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
+                        files.add(sourceInfo.getSource());
+                    }
+                }
+            } else {
+                final String exp = info.getAssets().substring(info.getAssets().lastIndexOf('.') + 1);
+                if (Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
+                    files.add(info.getAssets());
+                }
             }
         }
         return files;
@@ -504,13 +596,27 @@ public class HomeScreenView {
             case MediaType.IMAGE:
                 imageView.setVisibility(View.VISIBLE);
                 webView.setVisibility(View.INVISIBLE);
+                hideFrameView();
                 webView.clearCache(true);
                 exoVideoView.setVisibility(View.INVISIBLE);
                 break;
             case MediaType.WEB_VIEW:
                 imageView.setVisibility(View.INVISIBLE);
                 webView.setVisibility(View.VISIBLE);
+                hideFrameView();
                 exoVideoView.setVisibility(View.INVISIBLE);
+                break;
+            case MediaType.FRAME:
+                imageView.setVisibility(View.INVISIBLE);
+                webView.setVisibility(View.INVISIBLE);
+                webView.clearCache(true);
+                exoVideoView.setVisibility(View.INVISIBLE);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        frameView.setVisibility(View.VISIBLE);
+                    }
+                }, 300L);
                 break;
             case MediaType.VIDEO:
             default:
@@ -518,6 +624,7 @@ public class HomeScreenView {
                     @Override
                     public void run() {
                         imageView.setVisibility(View.INVISIBLE);
+                        hideFrameView();
                         webView.setVisibility(View.INVISIBLE);
                         webView.clearCache(true);
                         exoVideoView.setVisibility(View.VISIBLE);
@@ -525,6 +632,15 @@ public class HomeScreenView {
                 }, 300L);
                 break;
         }
+    }
+
+    private void hideFrameView() {
+        for (int i = 0; i < frameView.getChildCount(); i++) {
+            FrameView view = (FrameView) frameView.getChildAt(i);
+            view.onDestroy();
+        }
+        frameView.removeAllViews();
+        frameView.setVisibility(View.INVISIBLE);
     }
 
     public void checkAutoPlay() {
@@ -615,11 +731,24 @@ public class HomeScreenView {
 
                 // check cache and response from server
                 for (LayoutInfo info : newResponse.getLayouts()) {
-                    final String fileName = info.getAssets();
-                    final String exp = fileName.substring(fileName.lastIndexOf('.') + 1);
-                    if (!filesOnSdCard.contains(fileName)
-                            && Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
-                        listDownload.add(info);
+
+                    String fileName = "";
+                    if (info.getType() == LayoutInfo.LayoutType.FRAME) {
+                        for (SourceInfo sourceInfo : info.getObjSource()) {
+                            fileName = sourceInfo.getSource();
+                            final String exp = fileName.substring(fileName.lastIndexOf('.') + 1);
+                            if (!filesOnSdCard.contains(fileName)
+                                    && Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
+                                listDownload.add(info);
+                            }
+                        }
+                    } else {
+                        fileName = info.getAssets();
+                        final String exp = fileName.substring(fileName.lastIndexOf('.') + 1);
+                        if (!filesOnSdCard.contains(fileName)
+                                && Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
+                            listDownload.add(info);
+                        }
                     }
                 }
 
@@ -657,10 +786,9 @@ public class HomeScreenView {
         }
     }
 
-    private class ImageCountDownTimer extends CountDownTimer {
+    private class ImageCountDownTimer extends BaseCountDownTimer {
 
         private final String fileName;
-        private boolean mIsRunning;
 
         ImageCountDownTimer(long millisInFuture, long countDownInterval, String fileName) {
             super(millisInFuture, countDownInterval);
@@ -685,9 +813,49 @@ public class HomeScreenView {
             }
         }
 
+    }
+
+    private abstract class BaseCountDownTimer extends CountDownTimer {
+
+        protected boolean mIsRunning;
+
+        public BaseCountDownTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
         boolean isRunning() {
             return mIsRunning;
         }
+
+    }
+
+    private class FrameCountDownTimer extends BaseCountDownTimer {
+
+        private final String fileName;
+
+        FrameCountDownTimer(long millisInFuture, long countDownInterval, String fileName) {
+            super(millisInFuture, countDownInterval);
+            this.fileName = fileName;
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            mIsRunning = true;
+        }
+
+        @Override
+        public void onFinish() {
+            try {
+                mIsRunning = false;
+//                runtime.setMediaFileNameOff(fileName);
+            } catch (Exception e) {
+                if (Config.hasLogLevel(LogLevel.DATA))
+                    log.error("Error start video by list", e);
+            } finally {
+                playDefaultAdvertiseMedia(getMediaFileList());
+            }
+        }
+
     }
 
     protected void hostFragment(BaseFaceDetectionFragment fragment) {

@@ -7,8 +7,11 @@ import java.util.ArrayList;
 public class LayoutInfo {
 
     public enum LayoutType {
+        @SerializedName("1")
         IMAGE(1),
+        @SerializedName("2")
         VIDEO(2),
+        @SerializedName("5")
         FRAME(5),
         UNKNOWN(-1);
 

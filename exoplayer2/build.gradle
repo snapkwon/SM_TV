@@ -75,6 +75,7 @@ android {
         exclude 'LICENSE.txt'
         exclude 'AndroidManifest.xml'
     }
+    buildToolsVersion '25.0.0'
 }
 
 dependencies {

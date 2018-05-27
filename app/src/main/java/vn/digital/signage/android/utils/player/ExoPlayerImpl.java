@@ -88,6 +88,15 @@ public class ExoPlayerImpl implements IPlayer {
         mPlayer.setPlayWhenReady(true);
     }
 
+    @Override
+    public void stopExoPlayer() {
+        if (mPlayer != null) {
+            mPlayer.setPlayWhenReady(false);
+            mPlayer.stop();
+            mPlayer.seekTo(0);
+        }
+    }
+
     private void initPlayer() {
         if (Config.hasLogLevel(LogLevel.UI))
             log.info("ExoPlayerImpl - initPlayer");
