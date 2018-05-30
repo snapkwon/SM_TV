@@ -39,9 +39,6 @@ import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.app.SMRuntime;
 import vn.digital.signage.android.feature.client.base.MainActivity;
 import vn.digital.signage.android.feature.client.home.face.BaseFaceDetectionFragment;
-import vn.digital.signage.android.feature.client.home.face.FaceDetectionFragment;
-import vn.digital.signage.android.feature.client.home.face.logic.FaceDetectionImpl;
-import vn.digital.signage.android.feature.client.home.face.logic.IFaceDetection;
 import vn.digital.signage.android.utils.DateUtils;
 import vn.digital.signage.android.utils.DebugLog;
 import vn.digital.signage.android.utils.FileUtils;
@@ -81,7 +78,7 @@ public class HomeScreenView {
     @InjectView(R.id.fragment_home_adv_debug)
     TextView txtDebug;
 
-    private FaceDetectionFragment faceDetectionFragment;
+//    private FaceDetectionFragment faceDetectionFragment;
 
     private int mCurrentMediaIndex = 0;
 
@@ -99,7 +96,7 @@ public class HomeScreenView {
     private Handler mHandler = new Handler();
     private IPlayer mPlayer;
     private HashFileChecker mHashFileChecker;
-    private IFaceDetection faceDetection;
+    //    private IFaceDetection faceDetection;
     private OnTaskCompleteListener mOnTaskCompleteListener = new OnTaskCompleteListener() {
         @Override
         public void onTaskComplete(MediaDownloadTask task) {
@@ -214,9 +211,9 @@ public class HomeScreenView {
 
         mHashFileChecker = new HashFileCheckerImpl(runtime);
 
-        faceDetectionFragment = FaceDetectionFragment.newInstance();
-        hostFragment(faceDetectionFragment);
-        faceDetection = new FaceDetectionImpl(runtime);
+//        faceDetectionFragment = FaceDetectionFragment.newInstance();
+//        hostFragment(faceDetectionFragment);
+//        faceDetection = new FaceDetectionImpl(runtime);
     }
 
     public AsyncTaskManager getTaskManager() {
@@ -275,11 +272,13 @@ public class HomeScreenView {
         for (SourceInfo info : lists) {
             DebugLog.d(info.getSource() + "|");
             String url = "";
-            if (info.getType() == SourceInfo.SourceType.VIDEO) {
+            if (info.getType() != SourceInfo.SourceType.VIDEO) {
                 url = getMediaFile(info.getSource());
                 boolean isValidHashFile = mHashFileChecker.checkInvalidAndRemoveFile(url);
                 if (!isValidHashFile)
                     continue;
+            } else if (info.getType() != SourceInfo.SourceType.IMAGE) {
+                url = getMediaFile(info.getSource());
             } else url = info.getSource();
             info.setSource(url);
             FrameView frameLayout = new FrameView(mContext.getActivity(), mContext);
@@ -309,6 +308,8 @@ public class HomeScreenView {
     }
 
     private void playSelectedMediaFile(List<String> lists) {
+        if (lists == null || lists.isEmpty())
+            return;
         List<String> mMediaList = new ArrayList<>();
 
         taskManager.showDialog(false); // hide all message
@@ -324,6 +325,12 @@ public class HomeScreenView {
         if (response != null && !response.getLayouts().isEmpty()) {
             final List<LayoutInfo> listLayouts = response.getLayouts();
             if (listLayouts.get(mCurrentMediaIndex).getType() == LayoutInfo.LayoutType.FRAME) {
+//                mHandler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                    }
+//                }, 300);
                 playSelectedFrame(listLayouts.get(mCurrentMediaIndex).getObjSource());
 
                 setmCurrentMediaIndex((mCurrentMediaIndex + 1) % mMediaList.size());
@@ -360,7 +367,7 @@ public class HomeScreenView {
 
             if (isValidHashFile) {
                 // start capture face detection
-                faceDetection.onStartFaceDetection(runtime.getCurrentLayout());
+//                faceDetection.onStartFaceDetection(runtime.getCurrentLayout());
 
                 if (Arrays.asList(EXP_IMAGES_FILES).contains(exp.toUpperCase())) {
                     playImageMedia(url, fileName, currentUrlIndex); // play image file
@@ -870,6 +877,6 @@ public class HomeScreenView {
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        faceDetectionFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        faceDetectionFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

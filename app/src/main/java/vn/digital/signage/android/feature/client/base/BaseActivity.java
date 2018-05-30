@@ -161,8 +161,8 @@ public abstract class BaseActivity extends FragmentActivity {
             startService(getIntentService(ServerSyncAutoPlayService.class));
         if (!Utils.Services.isServiceRunning(this, UpdateInfoToServerService.class.getName()))
             startService(getIntentService(UpdateInfoToServerService.class));
-        if (!Utils.Services.isServiceRunning(this, ServerSyncFaceInfoService.class.getName()))
-            startService(getIntentService(ServerSyncFaceInfoService.class));
+//        if (!Utils.Services.isServiceRunning(this, ServerSyncFaceInfoService.class.getName()))
+//            startService(getIntentService(ServerSyncFaceInfoService.class));
     }
 
     public void onStopService() {

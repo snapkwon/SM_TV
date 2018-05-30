@@ -33,7 +33,7 @@ public class RootActivity extends FragmentActivity {
     private static final Handler handler = new Handler();
 
     private static final String[] permissions = new String[]{
-            Manifest.permission.CAMERA,
+//            Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.INTERNET,

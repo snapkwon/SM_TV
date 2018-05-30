@@ -87,7 +87,7 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
         for (LayoutInfo layout : lists) {
             if (layout.getType() == LayoutInfo.LayoutType.FRAME) {
                 for (SourceInfo sourceInfo : layout.getObjSource()) {
-                    if(sourceInfo.getType() == SourceInfo.SourceType.VIDEO)
+                    if(sourceInfo.getType() != SourceInfo.SourceType.URL)
                     {
                         if (log.isDebugEnabled()) {
                             log.debug(String.format("Start download media: %s", sourceInfo.getSource()));

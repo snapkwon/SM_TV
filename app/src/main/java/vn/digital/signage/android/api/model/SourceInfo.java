@@ -15,6 +15,8 @@ public class SourceInfo {
         VIDEO("video"),
         @SerializedName("url")
         URL("url"),
+        @SerializedName("image")
+        IMAGE("image"),
         UNKNOWN("");
 
         private String type;
@@ -24,7 +26,7 @@ public class SourceInfo {
         }
     }
 
-    private int name;
+    private String name;
     @SerializedName("z-index")
     private int z_index;
     private int width;
@@ -32,16 +34,15 @@ public class SourceInfo {
     private int top;
     private int left;
     private String time;
-    @SerializedName("soure")
     private String source;
     private String hash;
     private SourceType type;
 
-    public int getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(int name) {
+    public void setName(String name) {
         this.name = name;
     }
 
