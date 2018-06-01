@@ -16,6 +16,7 @@ import dagger.Provides;
 import de.greenrobot.event.EventBus;
 import vn.digital.signage.android.app.App;
 import vn.digital.signage.android.app.SMRuntime;
+import vn.digital.signage.android.feature.client.FrameActivity;
 import vn.digital.signage.android.feature.client.base.MainActivity;
 import vn.digital.signage.android.feature.client.home.HomeController;
 import vn.digital.signage.android.feature.client.home.HomeFragment;
@@ -36,6 +37,7 @@ import vn.digital.signage.android.utils.FragmentHelper;
         EventBus.class,
         // Activities
         MainActivity.class,
+        FrameActivity.class,
         // Controller
         HomeController.class,
         RegisterController.class,

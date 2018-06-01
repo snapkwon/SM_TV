@@ -32,10 +32,10 @@
 
 
     <!--face detection-->
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <!--<uses-feature-->
+    <!--android:name="android.hardware.camera"-->
+    <!--android:required="false" />-->
+    <!--<uses-permission android:name="android.permission.CAMERA" />-->
 
     <uses-feature
         android:name="android.software.leanback"
@@ -63,6 +63,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--Frame ACTIVITY-->
+        <activity
+            android:name=".feature.client.FrameActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.StartUpScreen"/>
 
         <!--TEST ACTIVITIES-->
         <activity
@@ -99,6 +105,7 @@
                 <!--<action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.DEFAULT" />-->
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
@@ -205,6 +212,13 @@
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode,face" />
+
+        <service
+            android:name=".services.MediaPlayerService"
+            android:enabled="false"
+            android:exported="false"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"></service>
     </application>
 
 </manifest>

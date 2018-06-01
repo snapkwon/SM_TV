@@ -1,6 +1,7 @@
 package vn.digital.signage.android.feature.client.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,8 +41,6 @@ public class HomeFragment extends BaseFragment {
     @Inject
     HomeController homeController;
 
-    String mUrl;
-
     @Inject
     public HomeFragment() {
     }
@@ -67,10 +66,14 @@ public class HomeFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Bundle bundle = getArguments();
         homeView.initViews(this);
 
         homeController.postVersionCode(String.valueOf(runtime.getRegisterInfo().getId()));
+        // start default video
+        getHomeView().playDefaultVideo(0);
+
+        // check layout
+        getHomeView().getCurrentPlaylist();
     }
 
     public HomeScreenView getHomeView() {
@@ -81,11 +84,6 @@ public class HomeFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
 
-        // start default video
-        getHomeView().playDefaultVideo(0);
-
-        // check layout
-        getHomeView().getCurrentPlaylist();
     }
 
     @Override
@@ -175,4 +173,9 @@ public class HomeFragment extends BaseFragment {
         homeView.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        homeView.onActivityResult();
+    }
 }

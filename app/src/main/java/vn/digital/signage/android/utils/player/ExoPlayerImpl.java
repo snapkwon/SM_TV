@@ -94,6 +94,8 @@ public class ExoPlayerImpl implements IPlayer {
             mPlayer.setPlayWhenReady(false);
             mPlayer.stop();
             mPlayer.seekTo(0);
+            if (exoMediaPlayerListener != null)
+                mPlayer.removeListener(exoMediaPlayerListener);
         }
     }
 

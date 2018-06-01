@@ -175,12 +175,12 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
             result = true;
 
         } catch (MalformedURLException e) {
-            log.error(App.getInstance().getString(R.string.error_message_bad_url));
+            log.error(App.getInstance().getString(R.string.error_message_bad_url) + e.getMessage());
             if (outFile != null) {
                 outFile.delete();
             }
         } catch (FileNotFoundException e) {
-            log.error(App.getInstance().getString(R.string.error_message_file_not_found));
+            log.error(App.getInstance().getString(R.string.error_message_file_not_found)+ e.getMessage());
             if (outFile != null) {
                 outFile.delete();
             }

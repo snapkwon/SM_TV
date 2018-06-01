@@ -47,7 +47,7 @@ public class NetworkUtils {
     }
 
     /**
-     * Gets local ip address.
+     * Gets local ip address.Xx
      *
      * @return the local ip address
      */

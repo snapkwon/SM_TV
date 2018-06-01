@@ -73,9 +73,77 @@ public class HomeController extends BaseController {
                 public void success(String json, Response response) {
                     try {
                         isLayoutCalling = false;
-
-                        json = "{\"layouts\":[{\"id\":\"1079\",\"group_id\":\"90\",\"name\":\"Baskin_TraceabilityAnka\",\"type\":\"2\",\"source\":\"<video id=\\\"video_layout\\\" class=\\\"fullscreen\\\" src=\\\"[asset_dir]39a8d44eef01882ac68c50df5258df9c.mp4\\\" autoplay=\\\"autoplay\\\" loop=\\\"loop\\\" onplay=\\\"this.volume=1.000000\\\" volume=\\\"1.000000\\\" \\/>\",\"assets\":\"39a8d44eef01882ac68c50df5258df9c.mp4\",\"hash\":\"5c39a36b002181d3536055e8f4ca7137\",\"data\":\"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Baskin_TraceabilityAnka.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\"duration\":\"30\",\"play_from\":\"2017-09-20 15:10:00\",\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"1\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-05-23 15:00:38\"},{\"id\":\"4563\",\"group_id\":\"90\",\"name\":\"Ca si Dang Test\",\"type\":\"5\",\"source\":\"[\\r\\n    {\\r\\n      \\\"name\\\": 1111,    \\r\\n      \\\"z-index\\\": 1,\\r\\n      \\\"width\\\": 580,\\r\\n      \\\"height\\\": 380,\\r\\n      \\\"top\\\": 0,\\r\\n      \\\"left\\\": 0,\\r\\n      \\\"time\\\": \\\"30s\\\",\\r\\n      \\\"soure\\\": \\\"923bf5aab03c623167993b0b30022a9e.mp4\\\",\\r\\n      \\\"hash\\\": \\\"eff9aa8a2bf6209bdd000226eab42f34\\\",\\r\\n      \\\"type\\\": \\\"video\\\"\\r\\n    },\\r\\n    {\\r\\n      \\\"name\\\": 222,     \\r\\n      \\\"z-index\\\": 2,\\r\\n      \\\"width\\\": 700,\\r\\n      \\\"height\\\": 360,\\r\\n      \\\"top\\\": 0,\\r\\n      \\\"left\\\": 641,\\r\\n      \\\"time\\\": \\\"20s\\\",\\r\\n      \\\"soure\\\": \\\"bb57528bcb213093f037c47dba338cc7.mp4\\\",\\r\\n      \\\"hash\\\": \\\"2553768e2dcc1bd4e66636e430495891\\\",\\r\\n      \\\"type\\\": \\\"video\\\"\\r\\n    },\\r\\n    {\\r\\n      \\\"name\\\": 3333,     \\r\\n      \\\"z-index\\\": 3,\\r\\n      \\\"width\\\": 780,\\r\\n      \\\"height\\\": 340,\\r\\n      \\\"top\\\": 361,\\r\\n      \\\"left\\\": 0,\\r\\n      \\\"time\\\": \\\"30s\\\",\\r\\n      \\\"soure\\\": \\\"fb6621401d514f02e239d9f2c25291ad.jpg\\\",\\r\\n      \\\"hash\\\":\\\"none\\\",\\r\\n      \\\"type\\\": \\\"video\\\"\\r\\n    },\\r\\n    {\\r\\n      \\\"name\\\": 4444,     \\r\\n      \\\"z-index\\\": 4,\\r\\n      \\\"width\\\": 500,\\r\\n      \\\"height\\\": 360,\\r\\n      \\\"top\\\": 361,\\r\\n      \\\"left\\\": 641,\\r\\n      \\\"time\\\": \\\"30s\\\",\\r\\n      \\\"soure\\\": \\\"https:\\/\\/www.sacombank.com.vn\\/company\\/Pages\\/ty-gia.aspx\\\",\\r\\n      \\\"hash\\\":\\\"none\\\",\\r\\n      \\\"type\\\": \\\"url\\\"\\r\\n    }\\r\\n  ]\",\"assets\":\"923bf5aab03c623167993b0b30022a9e.mp4\",\"hash\":\"eff9aa8a2bf6209bdd000226eab42f34\",\"data\":\"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Aerosmith - I Don't Want to Miss a Thing.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"1\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-05-23 15:00:56\"},{\"id\":\"3759\",\"group_id\":\"90\",\"name\":\"Ford_DP_LED\",\"type\":\"2\",\"source\":\"<video id=\\\"video_layout\\\" class=\\\"fullscreen\\\" src=\\\"[asset_dir]bd42d0b7424c9e944ffb89c84da82c86.mp4\\\" autoplay=\\\"autoplay\\\" loop=\\\"loop\\\" onplay=\\\"this.volume=1.000000\\\" volume=\\\"1.000000\\\" \\/>\",\"assets\":\"bd42d0b7424c9e944ffb89c84da82c86.mp4\",\"hash\":\"87b2743fa7db426bd9f0e65374f9002d\",\"data\":\"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Poster Ford.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"2\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2017-09-21 14:35:21\"},{\"id\":\"10680\",\"group_id\":\"90\",\"name\":\"Image\",\"type\":\"1\",\"source\":\"<div class=\\\"fullscreen image-cover\\\" style=\\\"background-image:url('[asset_dir]fb6621401d514f02e239d9f2c25291ad.jpg')\\\"><\\/div>\",\"assets\":\"fb6621401d514f02e239d9f2c25291ad.jpg\",\"hash\":null,\"data\":null,\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"4\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-05-24 17:17:41\"}]}";
-
+//                        json = "{\"layouts\":[{\"id\":\"9604\",\"group_id\":\"90\",\"name\":\"Test0001\",\"type\":\"2\",\"source\":\"<video id=\\\"video_layout\\\" class=\\\"fullscreen\\\" src=\\\"[asset_dir]eab93f2ed4eb46bdeaac7d1bca1c0bc5.mp4\\\" autoplay=\\\"autoplay\\\" loop=\\\"loop\\\" onplay=\\\"this.volume=1.000000\\\" volume=\\\"1.000000\\\" \\/>\",\"assets\":\"eab93f2ed4eb46bdeaac7d1bca1c0bc5.mp4\",\"hash\":\"dbc9b169158e8796abe94dc5bbc52582\",\"data\":\"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"000000000000004c886be3f6b6d13335aefa41c25e76f0.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"2\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-03-21 13:26:43\"},{\"id\":\"9607\",\"group_id\":\"90\",\"name\":\"Hinh0001\",\"type\":\"1\",\"source\":\"<div class=\\\"fullscreen image-cover\\\" style=\\\"background-image:url('[asset_dir]38958ccc590c1b72565996d884597edc.jpg')\\\"><\\/div>\",\"assets\":\"38958ccc590c1b72565996d884597edc.jpg\",\"hash\":null,\"data\":null,\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"2\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-03-21 13:50:19\"},{\"id\":\"8859\",\"group_id\":\"90\",\"name\":\"thoaitest_nd_time\",\"type\":\"5\",\"source\":\"[{\\\"id\\\":\\\"6\\\",\\\"layout_id\\\":\\\"8859\\\",\\\"name\\\":\\\"Frame1\\\",\\\"z-index\\\":\\\"1\\\",\\\"width\\\":\\\"580\\\",\\\"height\\\":\\\"380\\\",\\\"top\\\":\\\"0\\\",\\\"left\\\":\\\"0\\\",\\\"time\\\":\\\"30s\\\",\\\"source\\\":\\\"923bf5aab03c623167993b0b30022a9e.mp4\\\",\\\"hash\\\":\\\"eff9aa8a2bf6209bdd000226eab42f34\\\",\\\"type\\\":\\\"video\\\"},{\\\"id\\\":\\\"7\\\",\\\"layout_id\\\":\\\"8859\\\",\\\"name\\\":\\\"Frame2\\\",\\\"z-index\\\":\\\"2\\\",\\\"width\\\":\\\"800\\\",\\\"height\\\":\\\"340\\\",\\\"top\\\":\\\"0\\\",\\\"left\\\":\\\"641\\\",\\\"time\\\":\\\"20s\\\",\\\"source\\\":\\\"bb57528bcb213093f037c47dba338cc7.mp4\\\",\\\"hash\\\":\\\"2553768e2dcc1bd4e66636e430495891\\\",\\\"type\\\":\\\"video\\\"},{\\\"id\\\":\\\"8\\\",\\\"layout_id\\\":\\\"8859\\\",\\\"name\\\":\\\"Frame3\\\",\\\"z-index\\\":\\\"3\\\",\\\"width\\\":\\\"580\\\",\\\"height\\\":\\\"380\\\",\\\"top\\\":\\\"581\\\",\\\"left\\\":\\\"0\\\",\\\"time\\\":\\\"10s\\\",\\\"source\\\":\\\"fb6621401d514f02e239d9f2c25291ad.jpg\\\",\\\"hash\\\":\\\"\\\",\\\"type\\\":\\\"image\\\"},{\\\"id\\\":\\\"10\\\",\\\"layout_id\\\":\\\"8859\\\",\\\"name\\\":\\\"Frame4\\\",\\\"z-index\\\":\\\"4\\\",\\\"width\\\":\\\"701\\\",\\\"height\\\":\\\"340\\\",\\\"top\\\":\\\"381\\\",\\\"left\\\":\\\"581\\\",\\\"time\\\":\\\"30s\\\",\\\"source\\\":\\\"https:\\\\\\/\\\\\\/www.sacombank.com.vn\\\\\\/company\\\\\\/Pages\\\\\\/ty-gia.aspx\\\",\\\"hash\\\":null,\\\"type\\\":\\\"url\\\"}]\",\"assets\":\"aadfdf8b5502a0d50203c403f646c8a2.mp4\",\"hash\":\"7a77e8d9beb1a31f27f8be375b027989\",\"data\":\"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Bon Jovi - It's My Life.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"4\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-05-29 19:29:07\"},{\"id\":\"9498\",\"group_id\":\"90\",\"name\":\"Yoga Mastery 10.03\",\"type\":\"2\",\"source\":\"<video id=\\\"video_layout\\\" class=\\\"fullscreen\\\" src=\\\"[asset_dir]d23f4d5d0bffd312d73f9455293edf95.mp4\\\" autoplay=\\\"autoplay\\\" loop=\\\"loop\\\" onplay=\\\"this.volume=1.000000\\\" volume=\\\"1.000000\\\" \\/>\",\"assets\":\"d23f4d5d0bffd312d73f9455293edf95.mp4\",\"hash\":\"3ecda58582eb202c7a23e2438470c6f0\",\"data\":\"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Yoga Mastery.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"28\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-05-29 16:15:20\"}]}";
+//                        json = "{\n" +
+//                                "  \"layouts\": [\n" +
+//                                "    {\n" +
+//                                "      \"id\": \"9604\",\n" +
+//                                "      \"group_id\": \"90\",\n" +
+//                                "      \"name\": \"Test0001\",\n" +
+//                                "      \"type\": \"2\",\n" +
+//                                "      \"source\": \"<video id=\\\"video_layout\\\" class=\\\"fullscreen\\\" src=\\\"[asset_dir]eab93f2ed4eb46bdeaac7d1bca1c0bc5.mp4\\\" autoplay=\\\"autoplay\\\" loop=\\\"loop\\\" onplay=\\\"this.volume=1.000000\\\" volume=\\\"1.000000\\\" />\",\n" +
+//                                "      \"assets\": \"eab93f2ed4eb46bdeaac7d1bca1c0bc5.mp4\",\n" +
+//                                "      \"hash\": \"dbc9b169158e8796abe94dc5bbc52582\",\n" +
+//                                "      \"data\": \"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"000000000000004c886be3f6b6d13335aefa41c25e76f0.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\n" +
+//                                "      \"duration\": \"30\",\n" +
+//                                "      \"play_from\": null,\n" +
+//                                "      \"play_to\": null,\n" +
+//                                "      \"dontplay_from\": null,\n" +
+//                                "      \"dontplay_to\": null,\n" +
+//                                "      \"play_at\": null,\n" +
+//                                "      \"position\": \"2\",\n" +
+//                                "      \"transition_id\": \"64\",\n" +
+//                                "      \"transition_in_class\": \"none\",\n" +
+//                                "      \"transition_out_class\": \"none\",\n" +
+//                                "      \"enabled\": \"1\",\n" +
+//                                "      \"last_update\": \"2018-03-21 13:26:43\"\n" +
+//                                "    },\n" +
+//                                "    {\n" +
+//                                "      \"id\": \"9607\",\n" +
+//                                "      \"group_id\": \"90\",\n" +
+//                                "      \"name\": \"Hinh0001\",\n" +
+//                                "      \"type\": \"1\",\n" +
+//                                "      \"source\": \"<div class=\\\"fullscreen image-cover\\\" style=\\\"background-image:url('[asset_dir]38958ccc590c1b72565996d884597edc.jpg')\\\"></div>\",\n" +
+//                                "      \"assets\": \"38958ccc590c1b72565996d884597edc.jpg\",\n" +
+//                                "      \"hash\": null,\n" +
+//                                "      \"data\": null,\n" +
+//                                "      \"duration\": \"30\",\n" +
+//                                "      \"play_from\": null,\n" +
+//                                "      \"play_to\": null,\n" +
+//                                "      \"dontplay_from\": null,\n" +
+//                                "      \"dontplay_to\": null,\n" +
+//                                "      \"play_at\": null,\n" +
+//                                "      \"position\": \"2\",\n" +
+//                                "      \"transition_id\": \"64\",\n" +
+//                                "      \"transition_in_class\": \"none\",\n" +
+//                                "      \"transition_out_class\": \"none\",\n" +
+//                                "      \"enabled\": \"1\",\n" +
+//                                "      \"last_update\": \"2018-03-21 13:50:19\"\n" +
+//                                "    },\n" +
+//                                "    {\n" +
+//                                "      \"id\": \"9498\",\n" +
+//                                "      \"group_id\": \"90\",\n" +
+//                                "      \"name\": \"Yoga Mastery 10.03\",\n" +
+//                                "      \"type\": \"2\",\n" +
+//                                "      \"source\": \"<video id=\\\"video_layout\\\" class=\\\"fullscreen\\\" src=\\\"[asset_dir]d23f4d5d0bffd312d73f9455293edf95.mp4\\\" autoplay=\\\"autoplay\\\" loop=\\\"loop\\\" onplay=\\\"this.volume=1.000000\\\" volume=\\\"1.000000\\\" />\",\n" +
+//                                "      \"assets\": \"d23f4d5d0bffd312d73f9455293edf95.mp4\",\n" +
+//                                "      \"hash\": \"3ecda58582eb202c7a23e2438470c6f0\",\n" +
+//                                "      \"data\": \"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Yoga Mastery.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\n" +
+//                                "      \"duration\": \"30\",\n" +
+//                                "      \"play_from\": null,\n" +
+//                                "      \"play_to\": null,\n" +
+//                                "      \"dontplay_from\": null,\n" +
+//                                "      \"dontplay_to\": null,\n" +
+//                                "      \"play_at\": null,\n" +
+//                                "      \"position\": \"28\",\n" +
+//                                "      \"transition_id\": \"64\",\n" +
+//                                "      \"transition_in_class\": \"none\",\n" +
+//                                "      \"transition_out_class\": \"none\",\n" +
+//                                "      \"enabled\": \"1\",\n" +
+//                                "      \"last_update\": \"2018-05-29 16:15:20\"\n" +
+//                                "    }\n" +
+//                                "  ]\n" +
+//                                "}";
                         if (Config.hasLogLevel(LogLevel.API))
                             log.debug(String.format("HomeController - response getCurrentPlaylis1122 - success: %s ", json));
 

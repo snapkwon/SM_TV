@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.view.WindowManager;
 
 import org.apache.log4j.Logger;
 
@@ -159,6 +160,9 @@ public class MainActivity extends BaseActivity {
     public Object onRetainCustomNonConfigurationInstance() {
         final Fragment fragment = mFragmentHelper.getFragmentByTag(HomeFragment.TAG);
         if (fragment != null && (fragment instanceof HomeFragment)) {
+            getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+            );
             final HomeFragment home = (HomeFragment) fragment;
             return home.getHomeView().getTaskManager().retainTask();
         }

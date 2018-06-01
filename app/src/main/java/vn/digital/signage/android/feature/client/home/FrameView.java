@@ -1,46 +1,40 @@
 package vn.digital.signage.android.feature.client.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
 import org.apache.log4j.Logger;
 
 import java.util.Arrays;
-import java.util.Locale;
 
 import im.delight.android.webview.AdvancedWebView;
 import vn.digital.signage.android.api.model.SourceInfo;
 import vn.digital.signage.android.app.Config;
-import vn.digital.signage.android.feature.client.base.BaseFragment;
+import vn.digital.signage.android.media.IjkVideoView;
 import vn.digital.signage.android.utils.NetworkUtils;
 import vn.digital.signage.android.utils.enumeration.LogLevel;
 import vn.digital.signage.android.utils.enumeration.MediaType;
 import vn.digital.signage.android.utils.hash.HashFileChecker;
-import vn.digital.signage.android.utils.player.ExoPlayerImpl;
-import vn.digital.signage.android.utils.player.IPlayer;
-import vn.digital.signage.android.utils.player.VideoStateChanged;
 
-public class FrameView extends RelativeLayout {
+public class FrameView extends FrameLayout {
 
     private static final String TAG = FrameView.class.getSimpleName();
     private static final String[] EXP_IMAGES_FILES = new String[]{"JPG", "JPEG", "PNG"};
     private static final String[] EXP_WEBVIEW_FILES = new String[]{"HTML", "HTM", "ASPX"};
 
     private final Logger log = Logger.getLogger(FrameView.class);
-    SimpleExoPlayerView exoVideoView;
+    IjkVideoView exoVideoView;
     ImageView imageView;
     AdvancedWebView webView;
 
-    private BaseFragment mContext;
     private Handler mHandler = new Handler();
-    private IPlayer mPlayer;
     private HashFileChecker mHashFileChecker;
     private int mediaTypeVisibility;
 
@@ -86,9 +80,9 @@ public class FrameView extends RelativeLayout {
         }
     };
 
-    public FrameView(Context context, BaseFragment baseFragment) {
+    public FrameView(Context context) {
         super(context);
-        initViewsForChild(baseFragment);
+        initViewsForChild(context);
     }
 
     public FrameView(Context context, AttributeSet attrs) {
@@ -100,38 +94,17 @@ public class FrameView extends RelativeLayout {
     }
 
 
-    public void initViewsForChild(BaseFragment context) {
-        mContext = context;
+    public void initViewsForChild(Context context) {
+//        mContext = context;
         // setup videoview
-        exoVideoView = new SimpleExoPlayerView(context.getActivity());
-        exoVideoView.setVisibility(INVISIBLE);
-        mPlayer = new ExoPlayerImpl(mContext.getActivity(), exoVideoView, new VideoStateChanged() {
-            @Override
-            public void onError(String fileName, Exception error) {
-                if (Config.hasLogLevel(LogLevel.DATA)) {
-                    log.error(String.format("VideoStateChanged - onError - filename: %s - onError - %s", fileName, error.getMessage()));
-                }
-
-//                runtime.setMediaFileNameOff(fileName);
-//                playSelectedMediaFile(getMediaFileList());
-            }
-
-            @Override
-            public void onStateChanged(String fileName, int index) {
-                if (Config.hasLogLevel(LogLevel.DATA))
-                    log.info(String.format(Locale.ENGLISH, "VideoStateChanged - onStateChanged - filename: %s - index: %d", fileName, index));
-
-//                runtime.setMediaFileNameOff(fileName);
-
-//                playSelectedMediaFile(getMediaFileList());
-            }
-        });
+        exoVideoView = new IjkVideoView(context);
+//        exoVideoView.setVisibility(INVISIBLE);
 
         // setup webview
-        webView = new AdvancedWebView(mContext.getActivity());
-        webView.setListener(mContext.getActivity(), mOnWebViewListener);
+        webView = new AdvancedWebView(context);
+        webView.setListener((Activity)context, mOnWebViewListener);
 
-        imageView = new ImageView(mContext.getActivity());
+        imageView = new ImageView(context);
 
 //        faceDetectionFragment = FaceDetectionFragment.newInstance();
 //        hostFragment(faceDetectionFragment);
@@ -175,7 +148,8 @@ public class FrameView extends RelativeLayout {
 
     private void playVideoMedia(String url, final String fileName, int urlIndex) {
 
-        mPlayer.playWithExoPlayer(url, fileName, urlIndex);
+        exoVideoView.setVideoPath(url);
+        exoVideoView.start();
 
         updateMediaVisibility(MediaType.VIDEO);
     }
@@ -224,7 +198,9 @@ public class FrameView extends RelativeLayout {
                 break;
             case MediaType.VIDEO:
             default:
-                mPlayer.stopExoPlayer();
+                exoVideoView.stopPlayback();
+                exoVideoView.release(true);
+                exoVideoView.stopBackgroundPlay();
                 break;
         }
         removeAllViews();

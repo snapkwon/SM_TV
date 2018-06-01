@@ -43,7 +43,7 @@ android {
     buildToolsVersion '25.0.3'
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 25
 
         multiDexEnabled true
@@ -82,7 +82,7 @@ android {
             versionCode getDevVersionCode()
             //applicationId getArtifactPackageName()
             applicationId "vn.digital.signage.android"
-            minSdkVersion 16
+            minSdkVersion 21
         }
     }
 
@@ -180,5 +180,19 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     // encrypt library
     compile 'com.github.simbiose:Encryption:2.0.0'
+
+
+//    # required, enough for most devices.
+            compile 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.8'
+
+//    # Other ABIs: optional
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv5:0.8.8'
+    compile 'tv.danmaku.ijk.media:ijkplayer-arm64:0.8.8'
+    compile 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
+    compile 'tv.danmaku.ijk.media:ijkplayer-x86_64:0.8.8'
+
+//    # ExoPlayer as IMediaPlayer: optional, experimental
+    compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.8'
 
 }

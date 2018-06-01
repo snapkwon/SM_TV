@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import vn.digital.signage.android.Constants;
 import vn.digital.signage.android.R;
 import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.feature.client.base.MainActivity;
@@ -43,11 +44,10 @@ public class RegisterView {
     public void initViews(Context context) {
         mContext = context;
 
-//        if (Constants.DEBUG_PRE_ENTER_LOGIN_CONFIG)
-        {
+        if (Constants.DEBUG_PRE_ENTER_LOGIN_CONFIG) {
             //edtAddress.setText("http://cms3.smg.com.vn:8300");
             edtAddress.setText("http://cms3.smg.com.vn:8200");
-            edtName.setText("kkkkkk");
+            edtName.setText("aaaaaa");
             edtPassword.setText("123456");
         }
     }

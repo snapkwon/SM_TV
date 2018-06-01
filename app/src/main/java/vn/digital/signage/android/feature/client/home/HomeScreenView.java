@@ -1,5 +1,6 @@
 package vn.digital.signage.android.feature.client.home;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.CountDownTimer;
@@ -13,12 +14,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.gson.Gson;
 
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,15 +32,19 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import im.delight.android.webview.AdvancedWebView;
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 import vn.digital.signage.android.Constants;
 import vn.digital.signage.android.R;
 import vn.digital.signage.android.api.model.LayoutInfo;
 import vn.digital.signage.android.api.model.SourceInfo;
 import vn.digital.signage.android.api.response.LayoutResponse;
+import vn.digital.signage.android.app.App;
 import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.app.SMRuntime;
+import vn.digital.signage.android.feature.client.FrameActivity;
 import vn.digital.signage.android.feature.client.base.MainActivity;
 import vn.digital.signage.android.feature.client.home.face.BaseFaceDetectionFragment;
+import vn.digital.signage.android.media.IjkVideoView;
 import vn.digital.signage.android.utils.DateUtils;
 import vn.digital.signage.android.utils.DebugLog;
 import vn.digital.signage.android.utils.FileUtils;
@@ -50,9 +56,6 @@ import vn.digital.signage.android.utils.enumeration.LogLevel;
 import vn.digital.signage.android.utils.enumeration.MediaType;
 import vn.digital.signage.android.utils.hash.HashFileChecker;
 import vn.digital.signage.android.utils.hash.HashFileCheckerImpl;
-import vn.digital.signage.android.utils.player.ExoPlayerImpl;
-import vn.digital.signage.android.utils.player.IPlayer;
-import vn.digital.signage.android.utils.player.VideoStateChanged;
 
 public class HomeScreenView {
 
@@ -68,7 +71,7 @@ public class HomeScreenView {
     @Inject
     SMRuntime runtime;
     @InjectView(R.id.fragment_home_adv_video_player)
-    SimpleExoPlayerView exoVideoView;
+    IjkVideoView exoVideoView;
     @InjectView(R.id.fragment_home_adv_image)
     ImageView imageView;
     @InjectView(R.id.fragment_home_adv_webview)
@@ -81,6 +84,7 @@ public class HomeScreenView {
 //    private FaceDetectionFragment faceDetectionFragment;
 
     private int mCurrentMediaIndex = 0;
+    private String mCurrentUrl = "";
 
     public void setmCurrentMediaIndex(int mCurrentMediaIndex) {
         this.mCurrentMediaIndex = mCurrentMediaIndex;
@@ -94,7 +98,7 @@ public class HomeScreenView {
     private HomeFragment mContext;
     private AsyncTaskManager taskManager;
     private Handler mHandler = new Handler();
-    private IPlayer mPlayer;
+    //    private IPlayer mPlayer;
     private HashFileChecker mHashFileChecker;
     //    private IFaceDetection faceDetection;
     private OnTaskCompleteListener mOnTaskCompleteListener = new OnTaskCompleteListener() {
@@ -184,27 +188,42 @@ public class HomeScreenView {
         // Handle task that can be retained before
         taskManager.handleRetainedTask((mContext.getActivity()).getLastCustomNonConfigurationInstance());
         // setup videoview
-        mPlayer = new ExoPlayerImpl(mContext.getActivity(), exoVideoView, new VideoStateChanged() {
+        exoVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
             @Override
-            public void onError(String fileName, Exception error) {
-                if (Config.hasLogLevel(LogLevel.DATA)) {
-                    log.error(String.format("VideoStateChanged - onError - filename: %s - onError - %s", fileName, error.getMessage()));
-                }
-
-                runtime.setMediaFileNameOff(fileName);
-                playSelectedMediaFile(getMediaFileList());
-            }
-
-            @Override
-            public void onStateChanged(String fileName, int index) {
-                if (Config.hasLogLevel(LogLevel.DATA))
-                    log.info(String.format(Locale.ENGLISH, "VideoStateChanged - onStateChanged - filename: %s - index: %d", fileName, index));
-
-                runtime.setMediaFileNameOff(fileName);
-
+            public void onCompletion(IMediaPlayer iMediaPlayer) {
+                runtime.setMediaFileNameOff(iMediaPlayer.getDataSource());
                 playSelectedMediaFile(getMediaFileList());
             }
         });
+        exoVideoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
+                runtime.setMediaFileNameOff(iMediaPlayer.getDataSource());
+                playSelectedMediaFile(getMediaFileList());
+                return false;
+            }
+        });
+//        mPlayer = new ExoPlayerImpl(mContext.getActivity(), exoVideoView, new VideoStateChanged() {
+//            @Override
+//            public void onError(String fileName, Exception error) {
+//                if (Config.hasLogLevel(LogLevel.DATA)) {
+//                    log.error(String.format("VideoStateChanged - onError - filename: %s - onError - %s", fileName, error.getMessage()));
+//                }
+//
+//                runtime.setMediaFileNameOff(fileName);
+//                playSelectedMediaFile(getMediaFileList());
+//            }
+//
+//            @Override
+//            public void onStateChanged(String fileName, int index) {
+//                if (Config.hasLogLevel(LogLevel.DATA))
+//                    log.info(String.format(Locale.ENGLISH, "VideoStateChanged - onStateChanged - filename: %s - index: %d", fileName, index));
+//
+//                runtime.setMediaFileNameOff(fileName);
+//
+//                playSelectedMediaFile(getMediaFileList());
+//            }
+//        });
 
         // setup webview
         webView.setListener(mContext.getActivity(), mOnWebViewListener);
@@ -272,44 +291,50 @@ public class HomeScreenView {
         for (SourceInfo info : lists) {
             DebugLog.d(info.getSource() + "|");
             String url = "";
-            if (info.getType() != SourceInfo.SourceType.VIDEO) {
+            if (info.getType() == SourceInfo.SourceType.VIDEO) {
                 url = getMediaFile(info.getSource());
                 boolean isValidHashFile = mHashFileChecker.checkInvalidAndRemoveFile(url);
                 if (!isValidHashFile)
                     continue;
-            } else if (info.getType() != SourceInfo.SourceType.IMAGE) {
+            } else if (info.getType() == SourceInfo.SourceType.IMAGE) {
                 url = getMediaFile(info.getSource());
             } else url = info.getSource();
             info.setSource(url);
-            FrameView frameLayout = new FrameView(mContext.getActivity(), mContext);
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(info.getWidth(), info.getHeight());
-            layoutParams.leftMargin = info.getLeft();
-            layoutParams.topMargin = info.getTop();
-            frameView.addView(frameLayout, layoutParams);
-            frameLayout.playMedia0(info);
-            DebugLog.d(info.getLeft() + "|" + info.getTop() + "|" + info.getWidth() + "|" + info.getHeight());
+//            FrameView frameLayout = new FrameView(mContext.getActivity(), mContext);
+//            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(info.getWidth(), info.getHeight());
+//            layoutParams.leftMargin = info.getLeft();
+//            layoutParams.topMargin = info.getTop();
+//            frameView.addView(frameLayout, layoutParams);
+//            frameLayout.playMedia0(info);
+//            DebugLog.d(info.getLeft() + "|" + info.getTop() + "|" + info.getWidth() + "|" + info.getHeight());
 
         }
+        Intent intent = new Intent(App.getInstance(), FrameActivity.class);
+        intent.putExtra("source", (Serializable) lists);
+        intent.putExtra("duration", getImageDurationFromIndex(mCurrentMediaIndex));
 
-        updateMediaVisibility(MediaType.FRAME);
+        mContext.startActivityForResult(intent, 100);
+//        updateMediaVisibility(MediaType.FRAME);
 
-        long imageDuration = getImageDurationFromIndex(mCurrentMediaIndex);
-        // setup start time of the image
-        mCurrentImageStartTimeInMillis = System.currentTimeMillis();
+//        long imageDuration = getImageDurationFromIndex(mCurrentMediaIndex);
+//        // setup start time of the image
+//        mCurrentImageStartTimeInMillis = System.currentTimeMillis();
+//
+//        // destroy current count down timer
+//        if (mCountDownTimer != null && mCountDownTimer.isRunning()) {
+//            mCountDownTimer.cancel();
+//            mCountDownTimer = null;
+//        }
 
-        // destroy current count down timer
-        if (mCountDownTimer != null && mCountDownTimer.isRunning()) {
-            mCountDownTimer.cancel();
-            mCountDownTimer = null;
-        }
-
-        mCountDownTimer = new FrameCountDownTimer(imageDuration, 1000, "");
-        mCountDownTimer.start();
+//        mCountDownTimer = new FrameCountDownTimer(imageDuration, 1000, "");
+//        mCountDownTimer.start();
     }
+
 
     private void playSelectedMediaFile(List<String> lists) {
         if (lists == null || lists.isEmpty())
             return;
+
         List<String> mMediaList = new ArrayList<>();
 
         taskManager.showDialog(false); // hide all message
@@ -318,8 +343,17 @@ public class HomeScreenView {
             mMediaList.clear();
 
         mMediaList.addAll(lists);
+        try {
+            if (mMediaList.size() > 1 && mCurrentUrl.equals(mMediaList.get(mCurrentMediaIndex)))
+                return;// avoid play multiple times
 
-        DebugLog.d("on play index " + mCurrentMediaIndex + " |" + mMediaList.get(mCurrentMediaIndex));
+//            DebugLog.d("media list " + new Gson().toJson(mMediaList));
+
+            DebugLog.d("on play index " + mCurrentMediaIndex + " |" + mMediaList.get(mCurrentMediaIndex));
+        } catch (Exception e) {
+            setmCurrentMediaIndex((mCurrentMediaIndex + 1) % mMediaList.size());
+            return;
+        }
 
         final LayoutResponse response = runtime.getLayoutResponse();
         if (response != null && !response.getLayouts().isEmpty()) {
@@ -331,6 +365,7 @@ public class HomeScreenView {
 //
 //                    }
 //                }, 300);
+                mCurrentUrl = mMediaList.get(mCurrentMediaIndex);
                 playSelectedFrame(listLayouts.get(mCurrentMediaIndex).getObjSource());
 
                 setmCurrentMediaIndex((mCurrentMediaIndex + 1) % mMediaList.size());
@@ -366,6 +401,7 @@ public class HomeScreenView {
             boolean isValidHashFile = mHashFileChecker.checkInvalidAndRemoveFile(url);
 
             if (isValidHashFile) {
+                mCurrentUrl = mMediaList.get(mCurrentMediaIndex);
                 // start capture face detection
 //                faceDetection.onStartFaceDetection(runtime.getCurrentLayout());
 
@@ -382,6 +418,7 @@ public class HomeScreenView {
             } else {
                 playDefaultVideo(mCurrentMediaIndex);
                 // verify download video
+                DebugLog.d("some error cases");
                 getCurrentPlaylist();
             }
         } else {
@@ -392,7 +429,9 @@ public class HomeScreenView {
     private void playVideoMedia(String url, final String fileName, int urlIndex) {
         runtime.setMediaFileNameOn(fileName);
 
-        mPlayer.playWithExoPlayer(url, fileName, urlIndex);
+        exoVideoView.setVideoPath(url);
+        exoVideoView.start();
+//        mPlayer.playWithExoPlayer(url, fileName, urlIndex);
 
         updateMediaVisibility(MediaType.VIDEO);
 
@@ -446,6 +485,7 @@ public class HomeScreenView {
 
     private void deleteRedundantFiles(List<LayoutInfo> lists) {
         try {
+            DebugLog.d("media redundant  " + new Gson().toJson(lists));
             final List<String> files = getListName();
             final List<String> deleteFiles = new ArrayList<>();
             final List<String> listSrc = converterObjectToString(lists);
@@ -455,6 +495,7 @@ public class HomeScreenView {
                 }
             }
 
+            DebugLog.d("media delete  " + new Gson().toJson(deleteFiles));
             //  call delete on SDCard
             if (!deleteFiles.isEmpty()) {
                 for (String src : deleteFiles) {
@@ -506,6 +547,8 @@ public class HomeScreenView {
         if (videos == null) {
             return new ArrayList<>();
         }
+//        DebugLog.d("Frame" + videos.length);
+
         final String[] links = new String[videos.length];
         for (int i = 0; i < videos.length; i++) {
             final File f = videos[i];
@@ -518,14 +561,18 @@ public class HomeScreenView {
             for (LayoutInfo l : listLayouts) {
                 if (l.getType() == LayoutInfo.LayoutType.FRAME) {
                     listLinks.add("FRAME");
+//                    DebugLog.d("Frame");
                 } else
                     for (String s : links) {
+//                        DebugLog.d("Frame" + s + "|" + l.getAssets());
                         if (s.contains(l.getAssets())) {
                             listLinks.add(s);
+                            break;
                         }
                     }
             }
         }
+//        DebugLog.d("media " + new Gson().toJson(listLinks));
         return listLinks;
     }
 
@@ -546,7 +593,10 @@ public class HomeScreenView {
 
     private File[] getListOfSdCardFiles() {
         final File file = new File(String.format(Config.OverallConfig.FOLDER_PATH, runtime.getFolderVideoPath()));
-
+        try {
+            DebugLog.d("media file in folder " + new Gson().toJson(file.listFiles()));
+        } catch (Exception e) {
+        }
         return file.listFiles(new FilenameFilter() {
             public boolean accept(File directory, String fileName) {
                 final String exp = fileName.substring(fileName.lastIndexOf('.') + 1);
@@ -609,37 +659,39 @@ public class HomeScreenView {
                 hideFrameView();
                 webView.clearCache(true);
                 exoVideoView.setVisibility(View.INVISIBLE);
+
+                exoVideoView.stopPlayback();
+                exoVideoView.release(true);
+                exoVideoView.stopBackgroundPlay();
                 break;
             case MediaType.WEB_VIEW:
                 imageView.setVisibility(View.INVISIBLE);
                 webView.setVisibility(View.VISIBLE);
                 hideFrameView();
                 exoVideoView.setVisibility(View.INVISIBLE);
+
+                exoVideoView.stopPlayback();
+                exoVideoView.release(true);
+                exoVideoView.stopBackgroundPlay();
                 break;
             case MediaType.FRAME:
                 imageView.setVisibility(View.INVISIBLE);
                 webView.setVisibility(View.INVISIBLE);
                 webView.clearCache(true);
                 exoVideoView.setVisibility(View.INVISIBLE);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        frameView.setVisibility(View.VISIBLE);
-                    }
-                }, 300L);
+
+                exoVideoView.stopPlayback();
+                exoVideoView.release(true);
+                exoVideoView.stopBackgroundPlay();
+                frameView.setVisibility(View.VISIBLE);
                 break;
             case MediaType.VIDEO:
             default:
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        imageView.setVisibility(View.INVISIBLE);
-                        hideFrameView();
-                        webView.setVisibility(View.INVISIBLE);
-                        webView.clearCache(true);
-                        exoVideoView.setVisibility(View.VISIBLE);
-                    }
-                }, 300L);
+                imageView.setVisibility(View.INVISIBLE);
+                hideFrameView();
+                webView.setVisibility(View.INVISIBLE);
+                webView.clearCache(true);
+                exoVideoView.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -796,6 +848,10 @@ public class HomeScreenView {
         }
     }
 
+    public void onActivityResult() {
+        playDefaultAdvertiseMedia(getMediaFileList());
+    }
+
     private class ImageCountDownTimer extends BaseCountDownTimer {
 
         private final String fileName;
@@ -835,35 +891,6 @@ public class HomeScreenView {
 
         boolean isRunning() {
             return mIsRunning;
-        }
-
-    }
-
-    private class FrameCountDownTimer extends BaseCountDownTimer {
-
-        private final String fileName;
-
-        FrameCountDownTimer(long millisInFuture, long countDownInterval, String fileName) {
-            super(millisInFuture, countDownInterval);
-            this.fileName = fileName;
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            mIsRunning = true;
-        }
-
-        @Override
-        public void onFinish() {
-            try {
-                mIsRunning = false;
-//                runtime.setMediaFileNameOff(fileName);
-            } catch (Exception e) {
-                if (Config.hasLogLevel(LogLevel.DATA))
-                    log.error("Error start video by list", e);
-            } finally {
-                playDefaultAdvertiseMedia(getMediaFileList());
-            }
         }
 
     }

@@ -4,11 +4,13 @@ import android.content.res.Resources;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by ZINNO on 5/24/2018.
  */
 
-public class SourceInfo {
+public class SourceInfo implements Serializable {
 
     public enum SourceType {
         @SerializedName("video")
