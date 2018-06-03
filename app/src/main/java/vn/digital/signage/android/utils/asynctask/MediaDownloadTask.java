@@ -116,9 +116,11 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
     }
 
     private boolean isExist(File[] files, String source) {
-        for (File file : files) {
-            if (file.getAbsolutePath().contains(source))
-                return true;
+        if (files != null) {
+            for (File file : files) {
+                if (file.getAbsolutePath().contains(source))
+                    return true;
+            }
         }
         return false;
     }
