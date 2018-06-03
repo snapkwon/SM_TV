@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,7 +39,6 @@ import vn.digital.signage.android.R;
 import vn.digital.signage.android.api.model.LayoutInfo;
 import vn.digital.signage.android.api.model.SourceInfo;
 import vn.digital.signage.android.api.response.LayoutResponse;
-import vn.digital.signage.android.app.App;
 import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.app.SMRuntime;
 import vn.digital.signage.android.feature.client.FrameActivity;
@@ -192,14 +192,14 @@ public class HomeScreenView {
             @Override
             public void onCompletion(IMediaPlayer iMediaPlayer) {
                 runtime.setMediaFileNameOff(iMediaPlayer.getDataSource());
-                playSelectedMediaFile(getMediaFileList());
+                playDefaultAdvertiseMedia(getMediaFileList());
             }
         });
         exoVideoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
                 runtime.setMediaFileNameOff(iMediaPlayer.getDataSource());
-                playSelectedMediaFile(getMediaFileList());
+                playDefaultAdvertiseMedia(getMediaFileList());
                 return false;
             }
         });
@@ -262,11 +262,14 @@ public class HomeScreenView {
     }
 
     private void playDefaultAdvertiseMedia(final List<String> lists) {
+        DebugLog.d("test download media " + new Gson().toJson(lists));
         if (lists == null || lists.isEmpty()) {
             // play default video
-            final List<String> l = new ArrayList<>();
-            l.add(homeController.getVideoAdvLocal());
-            playSelectedMediaFile(l);
+            if (!TextUtils.isEmpty(homeController.getVideoAdvLocal())) {
+                final List<String> l = new ArrayList<>();
+                l.add(homeController.getVideoAdvLocal());
+                playSelectedMediaFile(l);
+            }
         } else {
             // play video list
             playSelectedMediaFile(lists);
@@ -275,16 +278,18 @@ public class HomeScreenView {
 
     private void playMedia0(int currentUrlIndex) {
         final String url = homeController.getVideoAdvLocal();
-        // Cache file name
-        final String fileName = url.substring(url.lastIndexOf('/') + 1);
-        final String exp = url.substring(url.lastIndexOf('.') + 1);
+        if (!TextUtils.isEmpty(url)) {
+            // Cache file name
+            final String fileName = url.substring(url.lastIndexOf('/') + 1);
+            final String exp = url.substring(url.lastIndexOf('.') + 1);
 
-        if (Arrays.asList(EXP_IMAGES_FILES).contains(exp.toUpperCase()))
-            playImageMedia(url, fileName, currentUrlIndex); // play image file
-        else if (Arrays.asList(EXP_WEBVIEW_FILES).contains(exp.toUpperCase()))
-            playWebViewMedia(url, fileName, currentUrlIndex); // play webview url
-        else
-            playVideoMedia(url, fileName, currentUrlIndex); // play video file
+            if (Arrays.asList(EXP_IMAGES_FILES).contains(exp.toUpperCase()))
+                playImageMedia(url, fileName, currentUrlIndex); // play image file
+            else if (Arrays.asList(EXP_WEBVIEW_FILES).contains(exp.toUpperCase()))
+                playWebViewMedia(url, fileName, currentUrlIndex); // play webview url
+            else
+                playVideoMedia(url, fileName, currentUrlIndex); // play video file
+        }
     }
 
     private void playSelectedFrame(List<SourceInfo> lists) {
@@ -309,11 +314,11 @@ public class HomeScreenView {
 //            DebugLog.d(info.getLeft() + "|" + info.getTop() + "|" + info.getWidth() + "|" + info.getHeight());
 
         }
-        Intent intent = new Intent(App.getInstance(), FrameActivity.class);
+        Intent intent = new Intent(HomeFragment.mActivity, FrameActivity.class);
         intent.putExtra("source", (Serializable) lists);
         intent.putExtra("duration", getImageDurationFromIndex(mCurrentMediaIndex));
 
-        mContext.startActivityForResult(intent, 100);
+        HomeFragment.mActivity.startActivityForResult(intent, 100);
 //        updateMediaVisibility(MediaType.FRAME);
 
 //        long imageDuration = getImageDurationFromIndex(mCurrentMediaIndex);
@@ -427,6 +432,10 @@ public class HomeScreenView {
     }
 
     private void playVideoMedia(String url, final String fileName, int urlIndex) {
+        exoVideoView.stopPlayback();
+        exoVideoView.release(true);
+        exoVideoView.stopBackgroundPlay();
+
         runtime.setMediaFileNameOn(fileName);
 
         exoVideoView.setVideoPath(url);
@@ -560,7 +569,8 @@ public class HomeScreenView {
             final List<LayoutInfo> listLayouts = response.getLayouts();
             for (LayoutInfo l : listLayouts) {
                 if (l.getType() == LayoutInfo.LayoutType.FRAME) {
-                    listLinks.add("FRAME");
+                    if (isFrameHasData(links, l))
+                        listLinks.add("FRAME");
 //                    DebugLog.d("Frame");
                 } else
                     for (String s : links) {
@@ -574,6 +584,21 @@ public class HomeScreenView {
         }
 //        DebugLog.d("media " + new Gson().toJson(listLinks));
         return listLinks;
+    }
+
+    private boolean isFrameHasData(String[] links, LayoutInfo layoutInfo) {
+        for(SourceInfo info : layoutInfo.getObjSource()){
+            boolean isExist = false;
+            for (String s : links) {
+                if (s.contains(info.getSource())) {
+                    isExist = true;
+                    break;
+                }
+            }
+            if(!isExist)
+                return false;
+        }
+        return true;
     }
 
     private List<String> getListName() {

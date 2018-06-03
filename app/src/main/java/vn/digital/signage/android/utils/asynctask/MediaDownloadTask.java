@@ -3,6 +3,8 @@ package vn.digital.signage.android.utils.asynctask;
 import android.os.AsyncTask;
 import android.os.Build;
 
+import com.google.gson.Gson;
+
 import org.apache.log4j.Logger;
 
 import java.io.BufferedInputStream;
@@ -21,11 +23,12 @@ import vn.digital.signage.android.api.model.LayoutInfo;
 import vn.digital.signage.android.api.model.SourceInfo;
 import vn.digital.signage.android.app.App;
 import vn.digital.signage.android.app.Config;
+import vn.digital.signage.android.utils.DebugLog;
 
 public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
     private final Logger log = Logger.getLogger(MediaDownloadTask.class);
 
-    private static final int DOWNLOAD_BUFFER_SIZE = 4096;
+    public static final int DOWNLOAD_BUFFER_SIZE = 4096;
 
     private List<LayoutInfo> lists;
     private String refUrl;
@@ -84,15 +87,18 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
             }
         }
 
+        File[] files = getListOfSdCardFiles();
+
         for (LayoutInfo layout : lists) {
             if (layout.getType() == LayoutInfo.LayoutType.FRAME) {
                 for (SourceInfo sourceInfo : layout.getObjSource()) {
-                    if(sourceInfo.getType() != SourceInfo.SourceType.URL)
-                    {
+                    if (sourceInfo.getType() != SourceInfo.SourceType.URL) {
+
                         if (log.isDebugEnabled()) {
                             log.debug(String.format("Start download media: %s", sourceInfo.getSource()));
                         }
-                        downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, sourceInfo.getSource()));
+                        if (!isExist(files, sourceInfo.getSource()))
+                            downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, sourceInfo.getSource()));
                     }
                 }
             } else {
@@ -100,12 +106,30 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
                 if (log.isDebugEnabled()) {
                     log.debug(String.format("Start download media: %s", layout.getAssets()));
                 }
-                downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, layout.getAssets()));
+                if (!isExist(files, layout.getAssets()))
+                    downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, layout.getAssets()));
             }
         }
 
         // This return causes onPostExecute call on UI thread
         return true;
+    }
+
+    private boolean isExist(File[] files, String source) {
+        for (File file : files) {
+            if (file.getAbsolutePath().contains(source))
+                return true;
+        }
+        return false;
+    }
+
+    private File[] getListOfSdCardFiles() {
+        final File file = new File(String.format(Config.OverallConfig.FOLDER_PATH, "media"));
+        try {
+            DebugLog.d("media file in folder " + new Gson().toJson(file.listFiles()));
+        } catch (Exception e) {
+        }
+        return file.listFiles();
     }
 
     private boolean downloadMultiVideo(String downloadUrl) {
@@ -180,7 +204,7 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
                 outFile.delete();
             }
         } catch (FileNotFoundException e) {
-            log.error(App.getInstance().getString(R.string.error_message_file_not_found)+ e.getMessage());
+            log.error(App.getInstance().getString(R.string.error_message_file_not_found) + e.getMessage());
             if (outFile != null) {
                 outFile.delete();
             }

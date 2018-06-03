@@ -195,4 +195,5 @@ public abstract class BaseActivity extends FragmentActivity {
     private <T extends Service> Intent getIntentService(Class<T> classes) {
         return new Intent(this, classes);
     }
+
 }

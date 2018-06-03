@@ -5,14 +5,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import org.apache.log4j.Logger;
-
-import java.util.Arrays;
 
 import im.delight.android.webview.AdvancedWebView;
 import vn.digital.signage.android.api.model.SourceInfo;
@@ -102,7 +101,7 @@ public class FrameView extends FrameLayout {
 
         // setup webview
         webView = new AdvancedWebView(context);
-        webView.setListener((Activity)context, mOnWebViewListener);
+        webView.setListener((Activity) context, mOnWebViewListener);
 
         imageView = new ImageView(context);
 
@@ -117,25 +116,26 @@ public class FrameView extends FrameLayout {
         final String fileName = url.substring(url.lastIndexOf('/') + 1);
         final String exp = url.substring(url.lastIndexOf('.') + 1);
 
-        if (Arrays.asList(EXP_IMAGES_FILES).contains(exp.toUpperCase())) {
+        if (sourceInfo.getType() == SourceInfo.SourceType.IMAGE) {
             if (getChildCount() == 0) {
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
                 addView(imageView, params);
             }
             playImageMedia(url, fileName, 0); // play image file
-        } else if (Arrays.asList(EXP_WEBVIEW_FILES).contains(exp.toUpperCase())) {
-            if(NetworkUtils.checkInternetConnection()) {
+        } else if (sourceInfo.getType() == SourceInfo.SourceType.URL) {
+            if (NetworkUtils.checkInternetConnection()) {
                 if (getChildCount() == 0) {
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
                     addView(webView, params);
                     playWebViewMedia(url, fileName, 0); // play webview url
                 }
-            }else {
+            } else {
                 if (getChildCount() == 0) {
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
                     addView(exoVideoView, params);
                 }
-                playVideoMedia(HomeController.DEFAULT_VIDEO_PATH, fileName, 0); // play video file
+                if (!TextUtils.isEmpty(HomeController.LOCAL_VIDEO_PATH))
+                    playVideoMedia(HomeController.LOCAL_VIDEO_PATH, fileName, 0); // play video file
             }
         } else {
             if (getChildCount() == 0) {

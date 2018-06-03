@@ -22,6 +22,7 @@ import vn.digital.signage.android.api.response.AutoPlayResponse;
 import vn.digital.signage.android.api.response.LayoutResponse;
 import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.app.SMRuntime;
+import vn.digital.signage.android.feature.client.base.BaseActivity;
 import vn.digital.signage.android.feature.client.base.BaseFragment;
 import vn.digital.signage.android.feature.server.updateinfotoserver.UpdateInfoToServerEvent;
 import vn.digital.signage.android.utils.UiUtils;
@@ -32,6 +33,7 @@ public class HomeFragment extends BaseFragment {
 
     public static final String TAG = HomeFragment.class.getSimpleName();
     public static HomeFragment instance;
+    public static BaseActivity mActivity;
     private final Logger log = Logger.getLogger(HomeFragment.class);
 
     @Inject
@@ -90,6 +92,7 @@ public class HomeFragment extends BaseFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         instance = this;
+        mActivity = (BaseActivity) getActivity();
     }
 
     @Override

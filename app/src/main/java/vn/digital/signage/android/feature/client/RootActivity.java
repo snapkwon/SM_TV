@@ -3,6 +3,7 @@ package vn.digital.signage.android.feature.client;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -24,6 +25,7 @@ import vn.digital.signage.android.util.permission.PermissionHelper;
 import vn.digital.signage.android.util.permission.PermissionHelperImpl;
 import vn.digital.signage.android.util.permission.PermissionListener;
 import vn.digital.signage.android.utils.Utils;
+import vn.digital.signage.android.utils.asynctask.CopyAssetToSd;
 
 import static vn.digital.signage.android.app.Config.ONE_MINUTE;
 import static vn.digital.signage.android.app.Config.ONE_SECOND;
@@ -85,7 +87,10 @@ public class RootActivity extends FragmentActivity {
 
         goToNextScreen();
         //goToTestFaceActivity();
+
+        new CopyAssetToSd(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
+
 
     protected void requestPermissionDenied(String[] permissions) {
         Log.info("RootActivity - requestPermissionDenied");

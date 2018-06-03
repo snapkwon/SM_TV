@@ -40,6 +40,7 @@ import vn.digital.signage.android.utils.enumeration.LogLevel;
 public class HomeController extends BaseController {
     public static final String TAG = HomeController.class.getSimpleName();
     public static final String DEFAULT_VIDEO_PATH = "file:///android_asset/adv_default_video.mp4";
+    public static String LOCAL_VIDEO_PATH = "";
     private final Logger log = Logger.getLogger(HomeController.class);
 
     @Inject
@@ -52,7 +53,7 @@ public class HomeController extends BaseController {
     }
 
     public String getVideoAdvLocal() {
-        return DEFAULT_VIDEO_PATH;
+        return LOCAL_VIDEO_PATH;
     }
 
     public void getCurrentPlaylist(String name) {

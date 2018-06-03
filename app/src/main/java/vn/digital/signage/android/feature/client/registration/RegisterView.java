@@ -3,6 +3,7 @@ package vn.digital.signage.android.feature.client.registration;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
@@ -68,6 +69,10 @@ public class RegisterView {
                 runtime.totalMemory(),
                 runtime.freeMemory(),
                 edtAddress.getText().toString());
+
+        InputMethodManager imm = (InputMethodManager) edtAddress.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(edtAddress.getWindowToken(), 0);
+
     }
 
     private boolean isValid() {
