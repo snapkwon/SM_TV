@@ -92,27 +92,29 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
         for (LayoutInfo layout : lists) {
             if (layout.getType() == LayoutInfo.LayoutType.FRAME) {
                 for (SourceInfo sourceInfo : layout.getObjSource()) {
-                    if (sourceInfo.getType() != SourceInfo.SourceType.URL) {
-
-                        if (log.isDebugEnabled()) {
-                            log.debug(String.format("Start download media: %s", sourceInfo.getSource()));
+                    if (sourceInfo.getType() == SourceInfo.SourceType.VIDEO_LIST) {
+                        for (String source : sourceInfo.getArrSources()) {
+                            downloadSourceData(files, refUrl, source);
                         }
-                        if (!isExist(files, sourceInfo.getSource()))
-                            downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, sourceInfo.getSource()));
+                    } else if (sourceInfo.getType() != SourceInfo.SourceType.URL) {
+                        downloadSourceData(files, refUrl, sourceInfo.getSource());
                     }
                 }
             } else {
-
-                if (log.isDebugEnabled()) {
-                    log.debug(String.format("Start download media: %s", layout.getAssets()));
-                }
-                if (!isExist(files, layout.getAssets()))
-                    downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, layout.getAssets()));
+                downloadSourceData(files, refUrl, layout.getAssets());
             }
         }
 
         // This return causes onPostExecute call on UI thread
         return true;
+    }
+
+    private void downloadSourceData(File[] files, String refUrl, String source) {
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Start download media: %s", source));
+        }
+        if (!isExist(files, source))
+            downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, source));
     }
 
     private boolean isExist(File[] files, String source) {

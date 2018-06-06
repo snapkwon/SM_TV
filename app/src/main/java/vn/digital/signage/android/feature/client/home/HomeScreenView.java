@@ -81,6 +81,8 @@ public class HomeScreenView {
     @InjectView(R.id.fragment_home_adv_debug)
     TextView txtDebug;
 
+    private List<String> mCurrentMediaList = new ArrayList<>();
+
 //    private FaceDetectionFragment faceDetectionFragment;
 
     private int mCurrentMediaIndex = 0;
@@ -257,21 +259,42 @@ public class HomeScreenView {
     public void playDefaultVideo(int index) {
         // reset current media index
         setmCurrentMediaIndex(index);
-        final List<String> links = getMediaFileList();
-        playDefaultAdvertiseMedia(links);
+        playDefaultAdvertiseMedia(getMediaFileList());
+    }
+
+    private boolean isValidLayout(List<String> lists) {
+        LayoutResponse response = runtime.getLayoutResponse();
+        if (lists.size() != response.getLayouts().size())
+            return false;
+
+        for (int i = 0; i < response.getLayouts().size(); i++) {
+            LayoutInfo layoutInfo = response.getLayouts().get(i);
+            if (layoutInfo.getType() == LayoutInfo.LayoutType.VIDEO || layoutInfo.getType() == LayoutInfo.LayoutType.IMAGE) {
+                if (!lists.get(i).contains(layoutInfo.getAssets()))
+                    return false;
+            } else if (layoutInfo.getType() == LayoutInfo.LayoutType.FRAME) {
+                List<String> mediaList = getListName();
+                if (!isFrameHasData(mediaList.toArray(new String[mediaList.size()]), layoutInfo))
+                    return false;
+            }
+        }
+        return true;
     }
 
     private void playDefaultAdvertiseMedia(final List<String> lists) {
         DebugLog.d("test download media " + new Gson().toJson(lists));
-        if (lists == null || lists.isEmpty()) {
+
+        if (lists == null || lists.isEmpty() || !isValidLayout(lists)) {
             // play default video
             if (!TextUtils.isEmpty(homeController.getVideoAdvLocal())) {
                 final List<String> l = new ArrayList<>();
                 l.add(homeController.getVideoAdvLocal());
+                mCurrentMediaList = l;
                 playSelectedMediaFile(l);
             }
         } else {
             // play video list
+            mCurrentMediaList = lists;
             playSelectedMediaFile(lists);
         }
     }
@@ -303,36 +326,20 @@ public class HomeScreenView {
                     continue;
             } else if (info.getType() == SourceInfo.SourceType.IMAGE) {
                 url = getMediaFile(info.getSource());
+            } else if (info.getType() == SourceInfo.SourceType.VIDEO_LIST) {
+                for (int i = 0; i < info.getArrSources().size(); i++) {
+                    String source = info.getArrSources().get(i);
+                    source = getMediaFile(source);
+                    info.getArrSources().set(i, source);
+                }
             } else url = info.getSource();
             info.setSource(url);
-//            FrameView frameLayout = new FrameView(mContext.getActivity(), mContext);
-//            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(info.getWidth(), info.getHeight());
-//            layoutParams.leftMargin = info.getLeft();
-//            layoutParams.topMargin = info.getTop();
-//            frameView.addView(frameLayout, layoutParams);
-//            frameLayout.playMedia0(info);
-//            DebugLog.d(info.getLeft() + "|" + info.getTop() + "|" + info.getWidth() + "|" + info.getHeight());
-
         }
         Intent intent = new Intent(HomeFragment.mActivity, FrameActivity.class);
         intent.putExtra("source", (Serializable) lists);
         intent.putExtra("duration", getImageDurationFromIndex(mCurrentMediaIndex));
 
         HomeFragment.mActivity.startActivityForResult(intent, 100);
-//        updateMediaVisibility(MediaType.FRAME);
-
-//        long imageDuration = getImageDurationFromIndex(mCurrentMediaIndex);
-//        // setup start time of the image
-//        mCurrentImageStartTimeInMillis = System.currentTimeMillis();
-//
-//        // destroy current count down timer
-//        if (mCountDownTimer != null && mCountDownTimer.isRunning()) {
-//            mCountDownTimer.cancel();
-//            mCountDownTimer = null;
-//        }
-
-//        mCountDownTimer = new FrameCountDownTimer(imageDuration, 1000, "");
-//        mCountDownTimer.start();
     }
 
 
@@ -361,24 +368,25 @@ public class HomeScreenView {
         }
 
         final LayoutResponse response = runtime.getLayoutResponse();
-        if (response != null && !response.getLayouts().isEmpty()) {
-            final List<LayoutInfo> listLayouts = response.getLayouts();
-            if (listLayouts.get(mCurrentMediaIndex).getType() == LayoutInfo.LayoutType.FRAME) {
-//                mHandler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                    }
-//                }, 300);
-                mCurrentUrl = mMediaList.get(mCurrentMediaIndex);
-                playSelectedFrame(listLayouts.get(mCurrentMediaIndex).getObjSource());
 
-                setmCurrentMediaIndex((mCurrentMediaIndex + 1) % mMediaList.size());
-                return;
-            }
-        }
-        DebugLog.d("on play media " + mCurrentMediaIndex + " |" + mMediaList.get(mCurrentMediaIndex));
         if (!mMediaList.isEmpty() && mMediaList.size() > mCurrentMediaIndex) {
+
+            if (runtime.getLayoutResponse() != null
+                    && runtime.getLayoutResponse().getLayouts() != null
+                    && !runtime.getLayoutResponse().getLayouts().isEmpty())
+                runtime.setCurrentLayout(runtime.getLayoutResponse().getLayouts().get(mCurrentMediaIndex));
+
+            if (response != null && !response.getLayouts().isEmpty()) {
+                final List<LayoutInfo> listLayouts = response.getLayouts();
+                if ("FRAME".equals(mMediaList.get(mCurrentMediaIndex))) {
+                    mCurrentUrl = mMediaList.get(mCurrentMediaIndex);
+                    playSelectedFrame(listLayouts.get(mCurrentMediaIndex).getObjSource());
+
+                    setmCurrentMediaIndex((mCurrentMediaIndex + 1) % mMediaList.size());
+                    return;
+                }
+            }
+            DebugLog.d("on play media " + mCurrentMediaIndex + " |" + mMediaList.get(mCurrentMediaIndex));
             final String url = mMediaList.get(mCurrentMediaIndex);
             final int currentUrlIndex = mCurrentMediaIndex;
 
@@ -398,10 +406,6 @@ public class HomeScreenView {
             // reset image duration
             mCurrentImageStartTimeInMillis = 0;
 
-            if (runtime.getLayoutResponse() != null
-                    && runtime.getLayoutResponse().getLayouts() != null
-                    && !runtime.getLayoutResponse().getLayouts().isEmpty())
-                runtime.setCurrentLayout(runtime.getLayoutResponse().getLayouts().get(mCurrentMediaIndex));
 
             boolean isValidHashFile = mHashFileChecker.checkInvalidAndRemoveFile(url);
 
@@ -582,23 +586,30 @@ public class HomeScreenView {
                     }
             }
         }
-//        DebugLog.d("media " + new Gson().toJson(listLinks));
+//        DebugLog.d("media file 11 " + new Gson().toJson(listLinks));
         return listLinks;
     }
 
     private boolean isFrameHasData(String[] links, LayoutInfo layoutInfo) {
-        for(SourceInfo info : layoutInfo.getObjSource()){
-            boolean isExist = false;
-            for (String s : links) {
-                if (s.contains(info.getSource())) {
-                    isExist = true;
-                    break;
-                }
-            }
-            if(!isExist)
-                return false;
+        for (SourceInfo info : layoutInfo.getObjSource()) {
+            if (info.getType() == SourceInfo.SourceType.VIDEO_LIST) {
+                for (String source : info.getArrSources())
+                    if (!contains(links, source))
+                        return false;
+            } else if (info.getType() != SourceInfo.SourceType.URL)
+                if (!contains(links, info.getSource()))
+                    return false;
         }
         return true;
+    }
+
+    private boolean contains(String[] links, String source) {
+        for (String s : links) {
+            if (s.contains(source)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<String> getListName() {
@@ -636,10 +647,18 @@ public class HomeScreenView {
         for (LayoutInfo info : lists) {
             if (info.getType() == LayoutInfo.LayoutType.FRAME) {
                 for (SourceInfo sourceInfo : info.getObjSource()) {
-
-                    final String exp = sourceInfo.getSource().substring(sourceInfo.getSource().lastIndexOf('.') + 1);
-                    if (Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
-                        files.add(sourceInfo.getSource());
+                    if (sourceInfo.getType() == SourceInfo.SourceType.VIDEO_LIST) {
+                        for (String source : sourceInfo.getArrSources()) {
+                            String exp = source.substring(sourceInfo.getSource().lastIndexOf('.') + 1);
+                            if (Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
+                                files.add(source);
+                            }
+                        }
+                    } else {
+                        final String exp = sourceInfo.getSource().substring(sourceInfo.getSource().lastIndexOf('.') + 1);
+                        if (Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
+                            files.add(sourceInfo.getSource());
+                        }
                     }
                 }
             } else {
@@ -822,11 +841,28 @@ public class HomeScreenView {
                     String fileName = "";
                     if (info.getType() == LayoutInfo.LayoutType.FRAME) {
                         for (SourceInfo sourceInfo : info.getObjSource()) {
-                            fileName = sourceInfo.getSource();
-                            final String exp = fileName.substring(fileName.lastIndexOf('.') + 1);
-                            if (!filesOnSdCard.contains(fileName)
-                                    && Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
-                                listDownload.add(info);
+                            if (sourceInfo.getType() == SourceInfo.SourceType.VIDEO_LIST) {
+                                boolean exist = false;
+                                for (String source : sourceInfo.getArrSources()) {
+                                    String exp = source.substring(source.lastIndexOf('.') + 1);
+                                    if (!filesOnSdCard.contains(source)
+                                            && Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
+                                        listDownload.add(info);
+                                        exist = true;
+                                        break;
+                                    }
+                                }
+
+                                if (exist)
+                                    break;
+                            } else {
+                                fileName = sourceInfo.getSource();
+                                final String exp = fileName.substring(fileName.lastIndexOf('.') + 1);
+                                if (!filesOnSdCard.contains(fileName)
+                                        && Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
+                                    listDownload.add(info);
+                                    break;
+                                }
                             }
                         }
                     } else {
@@ -860,20 +896,8 @@ public class HomeScreenView {
         }
     }
 
-    private void updateCurrentLayoutToRuntime(String fileName) {
-        List<LayoutInfo> ls = runtime.getLayoutResponse().getLayouts();
-
-        for (int i = 0; i < ls.size(); i++) {
-            if (i >= mCurrentMediaIndex) {
-                LayoutInfo lInfo = ls.get(i);
-                if (lInfo.getAssets().equalsIgnoreCase(fileName)) {
-                    runtime.setCurrentLayout(lInfo);
-                }
-            }
-        }
-    }
-
     public void onActivityResult() {
+        DebugLog.d("onActivityResult");
         playDefaultAdvertiseMedia(getMediaFileList());
     }
 

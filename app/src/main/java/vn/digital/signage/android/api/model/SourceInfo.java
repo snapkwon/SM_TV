@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by ZINNO on 5/24/2018.
@@ -13,6 +14,8 @@ import java.io.Serializable;
 public class SourceInfo implements Serializable {
 
     public enum SourceType {
+        @SerializedName("videolist")
+        VIDEO_LIST("videolist"),
         @SerializedName("video")
         VIDEO("video"),
         @SerializedName("url")
@@ -37,6 +40,7 @@ public class SourceInfo implements Serializable {
     private int left;
     private String time;
     private String source;
+    private List<String> arrSources;
     private String hash;
     private SourceType type;
 
@@ -123,5 +127,13 @@ public class SourceInfo implements Serializable {
 
     public static int getDpFromUnit(int unit) {
         return unit * Resources.getSystem().getDisplayMetrics().widthPixels / 1280;
+    }
+
+    public List<String> getArrSources() {
+        return arrSources;
+    }
+
+    public void setArrSources(List<String> arrSources) {
+        this.arrSources = arrSources;
     }
 }

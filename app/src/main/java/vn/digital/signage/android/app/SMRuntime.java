@@ -15,7 +15,6 @@ import vn.digital.signage.android.api.model.RegisterInfo;
 import vn.digital.signage.android.api.response.AssetsListResponse;
 import vn.digital.signage.android.api.response.AutoPlayResponse;
 import vn.digital.signage.android.api.response.LayoutResponse;
-import vn.digital.signage.android.api.response.OnOffTimerResponse;
 import vn.digital.signage.android.data.DataExecutor;
 import vn.digital.signage.android.data.model.SmData;
 import vn.digital.signage.android.data.prefs.SmSharedPreferenceRuntime;
@@ -314,23 +313,6 @@ public class SMRuntime {
             // save bak data
             SmData bakData = DataExecutor.loadBakDataIntance();
             bakData.setAutoPlayResponse(value);
-            DataExecutor.saveBakData(bakData);
-        }
-    }
-
-    public OnOffTimerResponse getOnOffTimer() {
-        return smData.getOnOffTimerResponse();
-    }
-
-    public void setOnOffTimer(OnOffTimerResponse value) {
-        smData.setOnOffTimerResponse(value);
-
-        DataExecutor.saveData(smData);
-
-        if (value != null) {
-            // save bak data
-            SmData bakData = DataExecutor.loadBakDataIntance();
-            bakData.setOnOffTimerResponse(value);
             DataExecutor.saveBakData(bakData);
         }
     }

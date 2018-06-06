@@ -13,10 +13,14 @@ import android.widget.RelativeLayout;
 
 import org.apache.log4j.Logger;
 
+import java.util.List;
+
 import im.delight.android.webview.AdvancedWebView;
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 import vn.digital.signage.android.api.model.SourceInfo;
 import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.media.IjkVideoView;
+import vn.digital.signage.android.utils.DebugLog;
 import vn.digital.signage.android.utils.NetworkUtils;
 import vn.digital.signage.android.utils.enumeration.LogLevel;
 import vn.digital.signage.android.utils.enumeration.MediaType;
@@ -94,6 +98,7 @@ public class FrameView extends FrameLayout {
 
 
     public void initViewsForChild(Context context) {
+//        setBackgroundColor(Color.RED);
 //        mContext = context;
         // setup videoview
         exoVideoView = new IjkVideoView(context);
@@ -114,7 +119,6 @@ public class FrameView extends FrameLayout {
         // Cache file name
         String url = sourceInfo.getSource();
         final String fileName = url.substring(url.lastIndexOf('/') + 1);
-        final String exp = url.substring(url.lastIndexOf('.') + 1);
 
         if (sourceInfo.getType() == SourceInfo.SourceType.IMAGE) {
             if (getChildCount() == 0) {
@@ -142,8 +146,38 @@ public class FrameView extends FrameLayout {
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
                 addView(exoVideoView, params);
             }
-            playVideoMedia(url, fileName, 0); // play video file
+            if (sourceInfo.getType() == SourceInfo.SourceType.VIDEO_LIST)
+                playVideoListMedia(sourceInfo.getArrSources());
+            else
+                playVideoMedia(url, fileName, 0); // play video file
         }
+    }
+
+    private int mCurrentIndex = 0;
+
+    private void playVideoListMedia(final List<String> sources) {
+        if (sources != null && !sources.isEmpty()) {
+            DebugLog.d("media list " + sources.get(mCurrentIndex));
+
+            if (!TextUtils.isEmpty(sources.get(mCurrentIndex))) {
+                exoVideoView.setVideoPath(sources.get(mCurrentIndex));
+                mCurrentIndex++;
+                mCurrentIndex = mCurrentIndex % sources.size();
+            } else {
+                mCurrentIndex++;
+                mCurrentIndex = mCurrentIndex % sources.size();
+                playVideoListMedia(sources);
+            }
+            exoVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(IMediaPlayer iMediaPlayer) {
+                    playVideoListMedia(sources);
+                }
+            });
+            exoVideoView.start();
+        }
+
+        updateMediaVisibility(MediaType.VIDEO);
     }
 
     private void playVideoMedia(String url, final String fileName, int urlIndex) {
@@ -198,6 +232,7 @@ public class FrameView extends FrameLayout {
                 break;
             case MediaType.VIDEO:
             default:
+                exoVideoView.setOnCompletionListener(null);
                 exoVideoView.stopPlayback();
                 exoVideoView.release(true);
                 exoVideoView.stopBackgroundPlay();

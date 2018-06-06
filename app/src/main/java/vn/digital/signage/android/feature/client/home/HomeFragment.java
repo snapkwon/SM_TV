@@ -76,6 +76,13 @@ public class HomeFragment extends BaseFragment {
 
         // check layout
         getHomeView().getCurrentPlaylist();
+
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                HomeController.isUpdate = true;
+//            }
+//        }, 60000);
     }
 
     public HomeScreenView getHomeView() {
