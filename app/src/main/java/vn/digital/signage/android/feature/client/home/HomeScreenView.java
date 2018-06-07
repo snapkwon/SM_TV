@@ -87,6 +87,15 @@ public class HomeScreenView {
 
     private int mCurrentMediaIndex = 0;
     private String mCurrentUrl = "";
+    private LayoutResponse mCurrentResponse;
+
+    public LayoutResponse getCurrentResponse() {
+        return mCurrentResponse;
+    }
+
+    public void setCurrentResponse(LayoutResponse mCurrentResponse) {
+        this.mCurrentResponse = mCurrentResponse;
+    }
 
     public void setmCurrentMediaIndex(int mCurrentMediaIndex) {
         this.mCurrentMediaIndex = mCurrentMediaIndex;
@@ -185,6 +194,10 @@ public class HomeScreenView {
 
     public void initViews(HomeFragment context) {
         mContext = context;
+
+        if (mCurrentResponse == null) {
+            setCurrentResponse(runtime.getLayoutResponse());
+        }
         // Create manager and set this activity as context and listener
         taskManager = new AsyncTaskManager(mContext.getActivity(), mOnTaskCompleteListener);
         // Handle task that can be retained before
@@ -263,7 +276,7 @@ public class HomeScreenView {
     }
 
     private boolean isValidLayout(List<String> lists) {
-        LayoutResponse response = runtime.getLayoutResponse();
+        LayoutResponse response = getCurrentResponse();
         if (lists.size() != response.getLayouts().size())
             return false;
 
@@ -273,18 +286,30 @@ public class HomeScreenView {
                 if (!lists.get(i).contains(layoutInfo.getAssets()))
                     return false;
             } else if (layoutInfo.getType() == LayoutInfo.LayoutType.FRAME) {
-                List<String> mediaList = getListName();
-                if (!isFrameHasData(mediaList.toArray(new String[mediaList.size()]), layoutInfo))
+
+                final File[] videos = getListOfSdCardFiles();
+
+                if (videos == null)
+                    return false;
+                String[] links = new String[videos.length];
+                for (int j = 0; j < videos.length; j++) {
+                    final File f = videos[j];
+                    links[j] = f.getAbsolutePath();
+                }
+
+                if (!isFrameHasData(links, layoutInfo))
                     return false;
             }
         }
+
+        runtime.setLayoutResponse(getCurrentResponse());
         return true;
     }
 
     private void playDefaultAdvertiseMedia(final List<String> lists) {
         DebugLog.d("test download media " + new Gson().toJson(lists));
 
-        if (lists == null || lists.isEmpty() || !isValidLayout(lists)) {
+        if (lists == null || lists.isEmpty()) {
             // play default video
             if (!TextUtils.isEmpty(homeController.getVideoAdvLocal())) {
                 final List<String> l = new ArrayList<>();
@@ -293,9 +318,13 @@ public class HomeScreenView {
                 playSelectedMediaFile(l);
             }
         } else {
-            // play video list
-            mCurrentMediaList = lists;
-            playSelectedMediaFile(lists);
+            if (!isValidLayout(lists)) {
+                playSelectedMediaFile(mCurrentMediaList);
+            } else {
+                // play video list
+                mCurrentMediaList = lists;
+                playSelectedMediaFile(lists);
+            }
         }
     }
 
@@ -431,6 +460,7 @@ public class HomeScreenView {
                 getCurrentPlaylist();
             }
         } else {
+            setmCurrentMediaIndex((mCurrentMediaIndex + 1) % mMediaList.size());
             playMedia0(mCurrentMediaIndex);
         }
     }
@@ -498,7 +528,7 @@ public class HomeScreenView {
 
     private void deleteRedundantFiles(List<LayoutInfo> lists) {
         try {
-            DebugLog.d("media redundant  " + new Gson().toJson(lists));
+//            DebugLog.d("media redundant  " + new Gson().toJson(lists));
             final List<String> files = getListName();
             final List<String> deleteFiles = new ArrayList<>();
             final List<String> listSrc = converterObjectToString(lists);
@@ -568,7 +598,7 @@ public class HomeScreenView {
             links[i] = f.getAbsolutePath();
         }
         final List<String> listLinks = new ArrayList<>();
-        final LayoutResponse response = runtime.getLayoutResponse();
+        final LayoutResponse response = getCurrentResponse();
         if (response != null && !response.getLayouts().isEmpty()) {
             final List<LayoutInfo> listLayouts = response.getLayouts();
             for (LayoutInfo l : listLayouts) {
@@ -629,10 +659,10 @@ public class HomeScreenView {
 
     private File[] getListOfSdCardFiles() {
         final File file = new File(String.format(Config.OverallConfig.FOLDER_PATH, runtime.getFolderVideoPath()));
-        try {
-            DebugLog.d("media file in folder " + new Gson().toJson(file.listFiles()));
-        } catch (Exception e) {
-        }
+//        try {
+//            DebugLog.d("media file in folder " + new Gson().toJson(file.listFiles()));
+//        } catch (Exception e) {
+//        }
         return file.listFiles(new FilenameFilter() {
             public boolean accept(File directory, String fileName) {
                 final String exp = fileName.substring(fileName.lastIndexOf('.') + 1);

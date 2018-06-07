@@ -7,6 +7,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.view.Gravity;
 
 import vn.digital.signage.android.R;
+import vn.digital.signage.android.utils.DebugLog;
 
 public final class AsyncTaskManager implements IProgressTracker, OnCancelListener {
 
@@ -67,6 +68,7 @@ public final class AsyncTaskManager implements IProgressTracker, OnCancelListene
             mProgressDialog.dismiss();
             mProgressDialog = null;
         }
+        DebugLog.d("download media task completed");
         // Notify activity about completion
         mTaskCompleteListener.onTaskComplete(mAsyncMediaDownloadTask);
         // Reset task

@@ -111,7 +111,7 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
 
     private void downloadSourceData(File[] files, String refUrl, String source) {
         if (log.isDebugEnabled()) {
-            log.debug(String.format("Start download media: %s", source));
+            DebugLog.d(String.format("Start download media: %s", source));
         }
         if (!isExist(files, source))
             downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, source));

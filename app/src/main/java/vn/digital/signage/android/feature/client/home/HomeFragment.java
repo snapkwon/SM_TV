@@ -112,7 +112,10 @@ public class HomeFragment extends BaseFragment {
         if (response != null) {
             if (response.isSuccess()) {
                 if (response.getError() != null && !response.getError().equalsIgnoreCase("error")) {
-                    runtime.setLayoutResponse(response);
+//                    runtime.setLayoutResponse(response);
+
+                    homeView.setCurrentResponse(response);
+
                     // Check and download video
                     homeView.checkDownloadVideo(response);
                 } else {
