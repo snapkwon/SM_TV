@@ -1,6 +1,5 @@
 package vn.digital.signage.android.feature.server.syncautoplayatdefinedtime;
 
-import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
@@ -16,9 +15,10 @@ import vn.digital.signage.android.app.App;
 import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.app.SMRuntime;
 import vn.digital.signage.android.feature.client.home.HomeFragment;
+import vn.digital.signage.android.feature.server.BaseService;
 import vn.digital.signage.android.utils.enumeration.LogLevel;
 
-public class ServerSyncAutoPlayService extends Service {
+public class ServerSyncAutoPlayService extends BaseService {
     public static final String TAG = ServerSyncAutoPlayService.class.getSimpleName();
 
     @Inject
@@ -26,9 +26,6 @@ public class ServerSyncAutoPlayService extends Service {
 
     // run on another Thread to avoid crash
     private Handler mHandler = new Handler();
-
-    // timer handling
-    private Timer timer = null;
 
     @Override
     public void onCreate() {

@@ -1,6 +1,5 @@
 package vn.digital.signage.android.feature.server.updateinfotoserver;
 
-import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
@@ -13,18 +12,16 @@ import java.util.TimerTask;
 import de.greenrobot.event.EventBus;
 import vn.digital.signage.android.app.App;
 import vn.digital.signage.android.app.Config;
+import vn.digital.signage.android.feature.server.BaseService;
 import vn.digital.signage.android.utils.enumeration.LogLevel;
 
 /**
  * The type Update info to server service.
  */
-public class UpdateInfoToServerService extends Service {
+public class UpdateInfoToServerService extends BaseService {
 
     // run on another Thread to avoid crash
     private Handler handler = new Handler();
-
-    // timer handling
-    private Timer timer = null;
 
     @Override
     public void onCreate() {

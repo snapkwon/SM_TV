@@ -67,7 +67,7 @@
         <!--Frame ACTIVITY-->
         <activity
             android:name=".feature.client.FrameActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.StartUpScreen"/>
 
         <!--TEST ACTIVITIES-->

@@ -367,7 +367,7 @@ public class HomeScreenView {
         Intent intent = new Intent(HomeFragment.mActivity, FrameActivity.class);
         intent.putExtra("source", (Serializable) lists);
         intent.putExtra("duration", getImageDurationFromIndex(mCurrentMediaIndex));
-
+        updateMediaVisibility(MediaType.FRAME);
         HomeFragment.mActivity.startActivityForResult(intent, 100);
     }
 

@@ -33,10 +33,10 @@ public class FrameActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UiUtils.setFullScreenView(this);
 
         setContentView(R.layout.activity_frame);
         ButterKnife.inject(this);
+        UiUtils.setFullScreenWindow(this, relativeLayout);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -75,7 +75,7 @@ public class FrameActivity extends FragmentActivity {
         long imageDuration = duration;
 
         // destroy current count down timer
-        if (mCountDownTimer != null && mCountDownTimer.isRunning()) {
+        if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
             mCountDownTimer = null;
         }
@@ -123,6 +123,12 @@ public class FrameActivity extends FragmentActivity {
             FrameView view = (FrameView) relativeLayout.getChildAt(i);
             view.onDestroy();
         }
+        // destroy current count down timer
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+            mCountDownTimer = null;
+        }
+
         super.finish();
     }
 }
