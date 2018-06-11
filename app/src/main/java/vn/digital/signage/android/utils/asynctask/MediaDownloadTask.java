@@ -1,7 +1,7 @@
 package vn.digital.signage.android.utils.asynctask;
 
 import android.os.AsyncTask;
-import android.os.Build;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
@@ -18,12 +18,17 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
+import vn.digital.signage.android.Constants;
 import vn.digital.signage.android.R;
 import vn.digital.signage.android.api.model.LayoutInfo;
 import vn.digital.signage.android.api.model.SourceInfo;
 import vn.digital.signage.android.app.App;
 import vn.digital.signage.android.app.Config;
+import vn.digital.signage.android.app.SMRuntime;
 import vn.digital.signage.android.utils.DebugLog;
+import vn.digital.signage.android.utils.FileUtils;
+import vn.digital.signage.android.utils.HashUtils;
+import vn.digital.signage.android.utils.enumeration.LogLevel;
 
 public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
     private final Logger log = Logger.getLogger(MediaDownloadTask.class);
@@ -38,10 +43,10 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
     private IProgressTracker mProgressTracker;
 
     /* UI Thread */
-    public MediaDownloadTask(List<LayoutInfo> lists, String refUrl, String prefFolderVideo) {
+    public MediaDownloadTask(List<LayoutInfo> lists, SMRuntime runtime) {
         this.lists = lists;
-        this.refUrl = refUrl;
-        this.prefFolderVideo = prefFolderVideo;
+        this.refUrl = runtime.getApiUrl();
+        this.prefFolderVideo = runtime.getFolderVideoPath();
     }
 
     /* UI Thread */
@@ -79,13 +84,6 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
     /* Separate Thread */
     @Override
     protected Boolean doInBackground(Void... arg0) {
-        // Check if task is cancelled
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
-            if (isCancelled()) {
-                // This return causes onPostExecute call on UI thread
-                return false;
-            }
-        }
 
         File[] files = getListOfSdCardFiles();
 
@@ -93,15 +91,18 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
             if (layout.getType() == LayoutInfo.LayoutType.FRAME) {
                 for (SourceInfo sourceInfo : layout.getObjSource()) {
                     if (sourceInfo.getType() == SourceInfo.SourceType.VIDEO_LIST) {
-                        for (String source : sourceInfo.getArrSources()) {
-                            downloadSourceData(files, refUrl, source);
+
+                        for (int i = 0; i < sourceInfo.getArrSources().size(); i++) {
+                            String source = sourceInfo.getArrSources().get(i);
+                            String hash = sourceInfo.getArrHashes().get(i);
+                            downloadSourceData(files, source, hash);
                         }
                     } else if (sourceInfo.getType() != SourceInfo.SourceType.URL) {
-                        downloadSourceData(files, refUrl, sourceInfo.getSource());
+                        downloadSourceData(files, sourceInfo.getSource(), sourceInfo.getHash());
                     }
                 }
             } else {
-                downloadSourceData(files, refUrl, layout.getAssets());
+                downloadSourceData(files, layout.getAssets(), layout.getHash());
             }
         }
 
@@ -109,22 +110,43 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
         return true;
     }
 
-    private void downloadSourceData(File[] files, String refUrl, String source) {
-        if (log.isDebugEnabled()) {
-            DebugLog.d(String.format("Start download media: %s", source));
-        }
-        if (!isExist(files, source))
+    private void downloadSourceData(File[] files, String source, String hash) {
+
+        String absolutePath = isExist(files, source);
+        if (TextUtils.isEmpty(absolutePath) || !checkInvalidAndRemoveFile(absolutePath, hash)) {
+            if (log.isDebugEnabled()) {
+                DebugLog.d(String.format("Start download media: %s", source));
+            }
             downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, source));
+        } else if (log.isDebugEnabled()) {
+            DebugLog.d(String.format("exist download media: %s", source));
+        }
     }
 
-    private boolean isExist(File[] files, String source) {
+    public boolean checkInvalidAndRemoveFile(String url, String hash) {
+        boolean result = true;
+
+        if (Constants.IS_HASH_CHECK_ENABLED) {
+
+            if (!TextUtils.isEmpty(hash)
+                    && hash.equalsIgnoreCase(HashUtils.fileToMD5(url))) {
+                FileUtils.deleteFileInPath(url);
+                if (Config.hasLogLevel(LogLevel.DATA))
+                    DebugLog.d("deleted file :" + url + " - url MD5: " + hash);
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    private String isExist(File[] files, String source) {
         if (files != null) {
             for (File file : files) {
                 if (file.getAbsolutePath().contains(source))
-                    return true;
+                    return file.getAbsolutePath();
             }
         }
-        return false;
+        return null;
     }
 
     private File[] getListOfSdCardFiles() {

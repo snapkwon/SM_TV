@@ -78,7 +78,76 @@ public class HomeController extends BaseController {
                         isLayoutCalling = false;
 
 //                        if (isUpdate)
-//                            json = "{\"layouts\":[{\"id\":\"9604\",\"group_id\":\"90\",\"name\":\"Test0001\",\"type\":\"2\",\"source\":\"<video id=\\\"video_layout\\\" class=\\\"fullscreen\\\" src=\\\"[asset_dir]eab93f2ed4eb46bdeaac7d1bca1c0bc5.mp4\\\" autoplay=\\\"autoplay\\\" loop=\\\"loop\\\" onplay=\\\"this.volume=1.000000\\\" volume=\\\"1.000000\\\" \\/>\",\"assets\":\"eab93f2ed4eb46bdeaac7d1bca1c0bc5.mp4\",\"hash\":\"dbc9b169158e8796abe94dc5bbc52582\",\"data\":\"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"000000000000004c886be3f6b6d13335aefa41c25e76f0.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"2\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-03-21 13:26:43\"},{\"id\":\"9607\",\"group_id\":\"90\",\"name\":\"Hinh0001\",\"type\":\"1\",\"source\":\"<div class=\\\"fullscreen image-cover\\\" style=\\\"background-image:url('[asset_dir]38958ccc590c1b72565996d884597edc.jpg')\\\"><\\/div>\",\"assets\":\"38958ccc590c1b72565996d884597edc.jpg\",\"hash\":null,\"data\":null,\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"2\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-03-21 13:50:19\"},{\"id\":\"8859\",\"group_id\":\"90\",\"name\":\"thoaitest_nd_time\",\"type\":\"5\",\"source\":\"[{\\\"id\\\":\\\"6\\\",\\\"layout_id\\\":\\\"8859\\\",\\\"name\\\":\\\"Frame1\\\",\\\"z-index\\\":\\\"1\\\",\\\"width\\\":\\\"580\\\",\\\"height\\\":\\\"380\\\",\\\"top\\\":\\\"0\\\",\\\"left\\\":\\\"0\\\",\\\"time\\\":\\\"30s\\\",\\\"source\\\":\\\"923bf5aab03c623167993b0b30022a9e.mp4\\\",\\\"hash\\\":\\\"eff9aa8a2bf6209bdd000226eab42f34\\\",\\\"type\\\":\\\"video\\\"},{\\\"id\\\":\\\"7\\\",\\\"layout_id\\\":\\\"8859\\\",\\\"name\\\":\\\"Frame2\\\",\\\"z-index\\\":\\\"2\\\",\\\"width\\\":\\\"800\\\",\\\"height\\\":\\\"340\\\",\\\"top\\\":\\\"0\\\",\\\"left\\\":\\\"641\\\",\\\"time\\\":\\\"20s\\\",\\\"source\\\":\\\"bb57528bcb213093f037c47dba338cc7.mp4\\\",\\\"hash\\\":\\\"2553768e2dcc1bd4e66636e430495891\\\",\\\"type\\\":\\\"video\\\"},{\\\"id\\\":\\\"8\\\",\\\"layout_id\\\":\\\"8859\\\",\\\"name\\\":\\\"Frame3\\\",\\\"z-index\\\":\\\"3\\\",\\\"width\\\":\\\"580\\\",\\\"height\\\":\\\"380\\\",\\\"top\\\":\\\"581\\\",\\\"left\\\":\\\"0\\\",\\\"time\\\":\\\"10s\\\",\\\"source\\\":\\\"fb6621401d514f02e239d9f2c25291ad.jpg\\\",\\\"hash\\\":\\\"\\\",\\\"type\\\":\\\"image\\\"},{\\\"id\\\":\\\"10\\\",\\\"layout_id\\\":\\\"8859\\\",\\\"name\\\":\\\"Frame4\\\",\\\"z-index\\\":\\\"4\\\",\\\"width\\\":\\\"701\\\",\\\"height\\\":\\\"340\\\",\\\"top\\\":\\\"381\\\",\\\"left\\\":\\\"581\\\",\\\"time\\\":\\\"30s\\\",\\\"source\\\":\\\"https:\\\\\\/\\\\\\/www.sacombank.com.vn\\\\\\/company\\\\\\/Pages\\\\\\/ty-gia.aspx\\\",\\\"hash\\\":null,\\\"type\\\":\\\"url\\\"}]\",\"assets\":\"aadfdf8b5502a0d50203c403f646c8a2.mp4\",\"hash\":\"7a77e8d9beb1a31f27f8be375b027989\",\"data\":\"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Bon Jovi - It's My Life.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"4\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-05-29 19:29:07\"},{\"id\":\"9498\",\"group_id\":\"90\",\"name\":\"Yoga Mastery 10.03\",\"type\":\"2\",\"source\":\"<video id=\\\"video_layout\\\" class=\\\"fullscreen\\\" src=\\\"[asset_dir]d23f4d5d0bffd312d73f9455293edf95.mp4\\\" autoplay=\\\"autoplay\\\" loop=\\\"loop\\\" onplay=\\\"this.volume=1.000000\\\" volume=\\\"1.000000\\\" \\/>\",\"assets\":\"d23f4d5d0bffd312d73f9455293edf95.mp4\",\"hash\":\"3ecda58582eb202c7a23e2438470c6f0\",\"data\":\"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Yoga Mastery.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"28\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-05-29 16:15:20\"}]}";
+//                            json = "{\n" +
+//                                    "  \"layouts\": [\n" +
+//                                    "    {\n" +
+//                                    "      \"id\": \"1080\",\n" +
+//                                    "      \"group_id\": \"102\",\n" +
+//                                    "      \"name\": \"Frame02\",\n" +
+//                                    "      \"type\": \"5\",\n" +
+//                                    "      \"source\": \"[\\n\\n\\n  {\\n\\n\\n    \\\"id\\\": \\\"12\\\",\\n\\n\\n    \\\"layout_id\\\": \\\"1080\\\",\\n\\n\\n    \\\"name\\\": \\\"Frame01_2\\\",\\n\\n\\n    \\\"z-index\\\": \\\"2\\\",\\n\\n\\n    \\\"width\\\": \\\"580\\\",\\n\\n\\n    \\\"height\\\": \\\"720\\\",\\n\\n\\n    \\\"top\\\": \\\"0\\\",\\n\\n\\n    \\\"left\\\": \\\"701\\\",\\n\\n\\n    \\\"time\\\": \\\"20s\\\",\\n\\n\\n    \\\"source\\\": \\\"http:\\\\/\\\\/cms3.smg.com.vn:8200\\\\/tygia\\\\/tygia.html\\\",\\n\\n\\n    \\\"hash\\\": \\\"\\\",\\n\\n\\n    \\\"type\\\": \\\"url\\\"\\n\\n\\n  },\\n\\n\\n  {\\n\\n\\n    \\\"id\\\": \\\"13\\\",\\n\\n\\n    \\\"layout_id\\\": \\\"1080\\\",\\n\\n\\n    \\\"name\\\": \\\"Frame01_3\\\",\\n\\n\\n    \\\"z-index\\\": \\\"3\\\",\\n\\n\\n    \\\"width\\\": \\\"700\\\",\\n\\n\\n    \\\"height\\\": \\\"394\\\",\\n\\n\\n    \\\"top\\\": \\\"163\\\",\\n\\n\\n    \\\"left\\\": \\\"0\\\",\\n\\n\\n    \\\"time\\\": \\\"180s\\\",\\n\\n\\n    \\\"source\\\": \\\"54b9ccafd0cca014566f2764c211d060.mp4,6302e77c911c6e4ef2ae908220f3c0e5.mp4,66fb795fe7f9c4fd3b08aefb9c79181e.mp4,47c9d9f77066d2fabebb45f94ca4a723.mp4,c56991e003133ea956a333658a06e660.mp4\\\",\\n\\n\\n    \\\"hash\\\": null,\\n\\n\\n    \\\"type\\\": \\\"videolist\\\"\\n\\n\\n  }\\n\\n\\n]\",\n" +
+//                                    "      \"assets\": \"12276974334f81e64aaff6681b34ea35.mp4\",\n" +
+//                                    "      \"hash\": \"5fef749ddfe72de0572b4118d1b3deda\",\n" +
+//                                    "      \"data\": \"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Topcake Final.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\n" +
+//                                    "      \"duration\": \"30\",\n" +
+//                                    "      \"play_from\": null,\n" +
+//                                    "      \"play_to\": null,\n" +
+//                                    "      \"dontplay_from\": null,\n" +
+//                                    "      \"dontplay_to\": null,\n" +
+//                                    "      \"play_at\": null,\n" +
+//                                    "      \"position\": \"1\",\n" +
+//                                    "      \"transition_id\": \"64\",\n" +
+//                                    "      \"transition_in_class\": \"none\",\n" +
+//                                    "      \"transition_out_class\": \"none\",\n" +
+//                                    "      \"enabled\": \"1\",\n" +
+//                                    "      \"last_update\": \"2018-06-04 17:31:49\"\n" +
+//                                    "    },\n" +
+//                                    "    {\n" +
+//                                    "      \"id\": \"6496\",\n" +
+//                                    "      \"group_id\": \"102\",\n" +
+//                                    "      \"name\": \"File tang Px\",\n" +
+//                                    "      \"type\": \"2\",\n" +
+//                                    "      \"source\": \"<video id=\\\"video_layout\\\" class=\\\"fullscreen\\\" src=\\\"[asset_dir]cdceea3ebbda3f96ccc8841efda69d88.mp4\\\" autoplay=\\\"autoplay\\\" loop=\\\"loop\\\" onplay=\\\"this.volume=1.000000\\\" volume=\\\"1.000000\\\" />\",\n" +
+//                                    "      \"assets\": \"cdceea3ebbda3f96ccc8841efda69d88.mp4\",\n" +
+//                                    "      \"hash\": \"879fce8c4af6f27ef3ba2697d6114ee0\",\n" +
+//                                    "      \"data\": \"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Poster Quyen Loi THV Nha Trang_1.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\n" +
+//                                    "      \"duration\": \"30\",\n" +
+//                                    "      \"play_from\": null,\n" +
+//                                    "      \"play_to\": null,\n" +
+//                                    "      \"dontplay_from\": null,\n" +
+//                                    "      \"dontplay_to\": null,\n" +
+//                                    "      \"play_at\": null,\n" +
+//                                    "      \"position\": \"1\",\n" +
+//                                    "      \"transition_id\": \"64\",\n" +
+//                                    "      \"transition_in_class\": \"none\",\n" +
+//                                    "      \"transition_out_class\": \"none\",\n" +
+//                                    "      \"enabled\": \"1\",\n" +
+//                                    "      \"last_update\": \"2018-06-04 17:59:19\"\n" +
+//                                    "    },\n" +
+//                                    "    {\n" +
+//                                    "      \"id\": \"9626\",\n" +
+//                                    "      \"group_id\": \"102\",\n" +
+//                                    "      \"name\": \"TVC Nutriboost Date Tetra\",\n" +
+//                                    "      \"type\": \"2\",\n" +
+//                                    "      \"source\": \"<video id=\\\"video_layout\\\" class=\\\"fullscreen\\\" src=\\\"[asset_dir]5521c85551991742e18bd1bb5bebea00.mp4\\\" autoplay=\\\"autoplay\\\" loop=\\\"loop\\\" onplay=\\\"this.volume=1.000000\\\" volume=\\\"1.000000\\\" />\",\n" +
+//                                    "      \"assets\": \"5521c85551991742e18bd1bb5bebea00.mp4\",\n" +
+//                                    "      \"hash\": \"cb38ea0f46c8b09687bcc8e871e25887\",\n" +
+//                                    "      \"data\": \"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Nutriboost Date Tetra.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\n" +
+//                                    "      \"duration\": \"30\",\n" +
+//                                    "      \"play_from\": null,\n" +
+//                                    "      \"play_to\": null,\n" +
+//                                    "      \"dontplay_from\": null,\n" +
+//                                    "      \"dontplay_to\": null,\n" +
+//                                    "      \"play_at\": null,\n" +
+//                                    "      \"position\": \"2\",\n" +
+//                                    "      \"transition_id\": \"64\",\n" +
+//                                    "      \"transition_in_class\": \"none\",\n" +
+//                                    "      \"transition_out_class\": \"none\",\n" +
+//                                    "      \"enabled\": \"1\",\n" +
+//                                    "      \"last_update\": \"2018-06-04 17:59:19\"\n" +
+//                                    "    }\n" +
+//                                    "  ]\n" +
+//                                    "}";
 //                            json = "{\"layouts\":[{\"id\":\"1080\",\"group_id\":\"102\",\"name\":\"Frame02\",\"type\":\"5\",\"source\":\"[{\\\"id\\\":\\\"11\\\",\\\"layout_id\\\":\\\"1080\\\",\\\"name\\\":\\\"Frame01_1\\\",\\\"z-index\\\":\\\"1\\\",\\\"width\\\":\\\"700\\\",\\\"height\\\":\\\"150\\\",\\\"top\\\":\\\"0\\\",\\\"left\\\":\\\"0\\\",\\\"time\\\":\\\"120s\\\",\\\"source\\\":\\\"https:\\\\\\/\\\\\\/www.facebook.com\\\\\\/van.vu.7712\\\\\\/videos\\\\\\/1371742342970843\\\\\\/\\\",\\\"hash\\\":null,\\\"type\\\":\\\"url\\\"},{\\\"id\\\":\\\"12\\\",\\\"layout_id\\\":\\\"1080\\\",\\\"name\\\":\\\"Frame01_2\\\",\\\"z-index\\\":\\\"2\\\",\\\"width\\\":\\\"580\\\",\\\"height\\\":\\\"720\\\",\\\"top\\\":\\\"0\\\",\\\"left\\\":\\\"701\\\",\\\"time\\\":\\\"20s\\\",\\\"source\\\":\\\"http:\\\\\\/\\\\\\/cms3.smg.com.vn:8200\\\\\\/tygia\\\\\\/tygia.html\\\",\\\"hash\\\":\\\"\\\",\\\"type\\\":\\\"url\\\"},{\\\"id\\\":\\\"13\\\",\\\"layout_id\\\":\\\"1080\\\",\\\"name\\\":\\\"Frame01_3\\\",\\\"z-index\\\":\\\"3\\\",\\\"width\\\":\\\"700\\\",\\\"height\\\":\\\"420\\\",\\\"top\\\":\\\"101\\\",\\\"left\\\":\\\"0\\\",\\\"time\\\":\\\"180s\\\",\\\"source\\\":\\\"54b9ccafd0cca014566f2764c211d060.mp4,6302e77c911c6e4ef2ae908220f3c0e5.mp4,66fb795fe7f9c4fd3b08aefb9c79181e.mp4,47c9d9f77066d2fabebb45f94ca4a723.mp4,c56991e003133ea956a333658a06e660.mp4\\\",\\\"hash\\\":null,\\\"type\\\":\\\"videolist\\\"},{\\\"id\\\":\\\"14\\\",\\\"layout_id\\\":\\\"1080\\\",\\\"name\\\":\\\"Frame01_4\\\",\\\"z-index\\\":\\\"4\\\",\\\"width\\\":\\\"700\\\",\\\"height\\\":\\\"150\\\",\\\"top\\\":\\\"621\\\",\\\"left\\\":\\\"0\\\",\\\"time\\\":\\\"120s\\\",\\\"source\\\":\\\"https:\\\\\\/\\\\\\/www.youtube.com\\\\\\/watch?v=L0Bohe8how8\\\",\\\"hash\\\":null,\\\"type\\\":\\\"url\\\"}]\",\"assets\":\"12276974334f81e64aaff6681b34ea35.mp4\",\"hash\":\"5fef749ddfe72de0572b4118d1b3deda\",\"data\":\"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Topcake Final.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\"duration\":\"60\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"1\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-06-04 17:31:49\"},{\"id\":\"6496\",\"group_id\":\"102\",\"name\":\"File tang Px\",\"type\":\"2\",\"source\":\"\n" +
 //                                    "<video id=\\\"video_layout\\\" class=\\\"fullscreen\\\" src=\\\"[asset_dir]cdceea3ebbda3f96ccc8841efda69d88.mp4\\\" autoplay=\\\"autoplay\\\" loop=\\\"loop\\\" onplay=\\\"this.volume=1.000000\\\" volume=\\\"1.000000\\\" \\/>\",\"assets\":\"cdceea3ebbda3f96ccc8841efda69d88.mp4\",\"hash\":\"879fce8c4af6f27ef3ba2697d6114ee0\",\"data\":\"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Poster Quyen Loi THV Nha Trang_1.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"1\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-06-04 17:59:19\"},{\"id\":\"9626\",\"group_id\":\"102\",\"name\":\"TVC Nutriboost Date Tetra\",\"type\":\"2\",\"source\":\"\n" +
 //                                    "<video id=\\\"video_layout\\\" class=\\\"fullscreen\\\" src=\\\"[asset_dir]5521c85551991742e18bd1bb5bebea00.mp4\\\" autoplay=\\\"autoplay\\\" loop=\\\"loop\\\" onplay=\\\"this.volume=1.000000\\\" volume=\\\"1.000000\\\" \\/>\",\"assets\":\"5521c85551991742e18bd1bb5bebea00.mp4\",\"hash\":\"cb38ea0f46c8b09687bcc8e871e25887\",\"data\":\"{\\\"pause_jukebox\\\":\\\"0\\\",\\\"file_name\\\":\\\"Nutriboost Date Tetra.mp4\\\",\\\"loop_video\\\":\\\"1\\\",\\\"volume\\\":\\\"100\\\"}\",\"duration\":\"30\",\"play_from\":null,\"play_to\":null,\"dontplay_from\":null,\"dontplay_to\":null,\"play_at\":null,\"position\":\"2\",\"transition_id\":\"64\",\"transition_in_class\":\"none\",\"transition_out_class\":\"none\",\"enabled\":\"1\",\"last_update\":\"2018-06-04 17:59:19\"}]}";
@@ -177,10 +246,12 @@ public class HomeController extends BaseController {
                                 ArrayList<SourceInfo> sourceInfos = new Gson().fromJson(info.getSource(), new TypeToken<ArrayList<SourceInfo>>() {
                                 }.getType());
                                 info.setObjSource(sourceInfos);
-                                for(SourceInfo sourceInfo : sourceInfos){
-                                    if(sourceInfo.getType() == SourceInfo.SourceType.VIDEO_LIST){
+                                for (SourceInfo sourceInfo : sourceInfos) {
+                                    if (sourceInfo.getType() == SourceInfo.SourceType.VIDEO_LIST) {
                                         String[] sources = sourceInfo.getSource().split(",");
                                         sourceInfo.setArrSources(Arrays.asList(sources));
+                                        sources = sourceInfo.getHash().split(",");
+                                        sourceInfo.setArrHashes(Arrays.asList(sources));
                                     }
                                 }
                             }

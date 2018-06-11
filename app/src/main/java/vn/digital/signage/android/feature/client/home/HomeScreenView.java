@@ -564,7 +564,7 @@ public class HomeScreenView {
             // Stop service when server change group or delete and add new video
             ((MainActivity) mContext.getActivity()).onStopService();
             // Start download
-            taskManager.setupTask(new MediaDownloadTask(lists, runtime.getApiUrl(), runtime.getFolderVideoPath()));
+            taskManager.setupTask(new MediaDownloadTask(lists, runtime));
             taskManager.showDialog(runtime.getPlaylistProgressStart());
         }
     }

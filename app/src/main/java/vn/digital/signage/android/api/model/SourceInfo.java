@@ -41,6 +41,7 @@ public class SourceInfo implements Serializable {
     private String time;
     private String source;
     private List<String> arrSources;
+    private List<String> arrHashes;
     private String hash;
     private SourceType type;
 
@@ -135,5 +136,13 @@ public class SourceInfo implements Serializable {
 
     public void setArrSources(List<String> arrSources) {
         this.arrSources = arrSources;
+    }
+
+    public List<String> getArrHashes() {
+        return arrHashes;
+    }
+
+    public void setArrHashes(List<String> arrHashes) {
+        this.arrHashes = arrHashes;
     }
 }
