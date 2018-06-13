@@ -54,6 +54,8 @@ public class RootActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
 
+        Paper.init(this);
+
         permissionHelper = new PermissionHelperImpl(this, new PermissionListener() {
             @Override
             public void onRequestPermissionsGranted(String[] permissions) {
@@ -79,8 +81,7 @@ public class RootActivity extends FragmentActivity {
     }
 
     protected void requestPermissionGranted(String[] permissions) {
-        Log.info("RootActivity - requestPermissionGranted");
-        Paper.init(this);
+//        DebugLog.d("RootActivity - requestPermissionGranted");
 
         // Config Logs
         setLogConfigurator();

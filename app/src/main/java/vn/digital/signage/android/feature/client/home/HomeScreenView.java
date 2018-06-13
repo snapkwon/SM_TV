@@ -48,6 +48,7 @@ import vn.digital.signage.android.media.IjkVideoView;
 import vn.digital.signage.android.utils.DateUtils;
 import vn.digital.signage.android.utils.DebugLog;
 import vn.digital.signage.android.utils.FileUtils;
+import vn.digital.signage.android.utils.HashUtils;
 import vn.digital.signage.android.utils.NetworkUtils;
 import vn.digital.signage.android.utils.asynctask.AsyncTaskManager;
 import vn.digital.signage.android.utils.asynctask.MediaDownloadTask;
@@ -283,7 +284,7 @@ public class HomeScreenView {
         for (int i = 0; i < response.getLayouts().size(); i++) {
             LayoutInfo layoutInfo = response.getLayouts().get(i);
             if (layoutInfo.getType() == LayoutInfo.LayoutType.VIDEO || layoutInfo.getType() == LayoutInfo.LayoutType.IMAGE) {
-                if (!lists.get(i).contains(layoutInfo.getAssets()))
+                if (!lists.get(i).contains(layoutInfo.getAssets()) || !checkInvalidAndRemoveFile(lists.get(i), layoutInfo.getHash()))
                     return false;
             } else if (layoutInfo.getType() == LayoutInfo.LayoutType.FRAME) {
 
@@ -306,6 +307,23 @@ public class HomeScreenView {
         return true;
     }
 
+    public boolean checkInvalidAndRemoveFile(String url, String hash) {
+        boolean result = true;
+        //DebugLog.d("check hash :" + url + " - url MD5: " + hash);
+        if (Constants.IS_HASH_CHECK_ENABLED) {
+
+            if (!TextUtils.isEmpty(hash)
+                    && !hash.equalsIgnoreCase(HashUtils.fileToMD5(url))) {
+//                FileUtils.deleteFileInPath(url);
+                DebugLog.d("check hash2 :" + url + " - url MD5: " + HashUtils.fileToMD5(url));
+                if (Config.hasLogLevel(LogLevel.DATA))
+                    DebugLog.d("deleted file :" + url + " - url MD5: " + hash);
+                result = false;
+            }
+        }
+        return result;
+    }
+
     private void playDefaultAdvertiseMedia(final List<String> lists) {
         DebugLog.d("test download media " + new Gson().toJson(lists));
 
@@ -319,9 +337,12 @@ public class HomeScreenView {
             }
         } else {
             if (!isValidLayout(lists)) {
-                playSelectedMediaFile(mCurrentMediaList);
+                if (mCurrentMediaList != null && !mCurrentMediaList.isEmpty())
+                    playSelectedMediaFile(mCurrentMediaList);
+                else playMedia0(0);
             } else {
                 // play video list
+                DebugLog.d("valid layout");
                 mCurrentMediaList = lists;
                 playSelectedMediaFile(lists);
             }
@@ -346,7 +367,7 @@ public class HomeScreenView {
 
     private void playSelectedFrame(List<SourceInfo> lists) {
         for (SourceInfo info : lists) {
-            DebugLog.d(info.getSource() + "|");
+//            DebugLog.d(info.getSource() + "|");
             String url = "";
             if (info.getType() == SourceInfo.SourceType.VIDEO) {
                 url = getMediaFile(info.getSource());
@@ -603,7 +624,7 @@ public class HomeScreenView {
             final List<LayoutInfo> listLayouts = response.getLayouts();
             for (LayoutInfo l : listLayouts) {
                 if (l.getType() == LayoutInfo.LayoutType.FRAME) {
-                    if (isFrameHasData(links, l))
+//                    if (isFrameHasData(links, l))
                         listLinks.add("FRAME");
 //                    DebugLog.d("Frame");
                 } else
@@ -623,23 +644,29 @@ public class HomeScreenView {
     private boolean isFrameHasData(String[] links, LayoutInfo layoutInfo) {
         for (SourceInfo info : layoutInfo.getObjSource()) {
             if (info.getType() == SourceInfo.SourceType.VIDEO_LIST) {
-                for (String source : info.getArrSources())
-                    if (!contains(links, source))
+                for (int i = 0; i < info.getArrSources().size(); i++) {
+                    String source = info.getArrSources().get(i);
+                    String hash = info.getArrHashes().get(i);
+                    String url = contains(links, source);
+                    if (TextUtils.isEmpty(url) || !checkInvalidAndRemoveFile(url, hash))
                         return false;
-            } else if (info.getType() != SourceInfo.SourceType.URL)
-                if (!contains(links, info.getSource()))
+                }
+            } else if (info.getType() != SourceInfo.SourceType.URL) {
+                String url = contains(links, info.getSource());
+                if (TextUtils.isEmpty(url) || !checkInvalidAndRemoveFile(url, info.getHash()))
                     return false;
+            }
         }
         return true;
     }
 
-    private boolean contains(String[] links, String source) {
+    private String contains(String[] links, String source) {
         for (String s : links) {
             if (s.contains(source)) {
-                return true;
+                return s;
             }
         }
-        return false;
+        return "";
     }
 
     private List<String> getListName() {

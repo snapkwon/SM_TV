@@ -63,10 +63,14 @@ public final class AsyncTaskManager implements IProgressTracker, OnCancelListene
     @Override
     public void onComplete() {
         // Close progress dialog
-        if (mProgressDialog != null) {
-            mProgressDialog.hide();
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
+        try {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.hide();
+                mProgressDialog.dismiss();
+                mProgressDialog = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         DebugLog.d("download media task completed");
         // Notify activity about completion

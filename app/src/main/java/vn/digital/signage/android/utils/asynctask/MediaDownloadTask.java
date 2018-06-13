@@ -3,8 +3,6 @@ package vn.digital.signage.android.utils.asynctask;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-
 import org.apache.log4j.Logger;
 
 import java.io.BufferedInputStream;
@@ -85,8 +83,6 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
     @Override
     protected Boolean doInBackground(Void... arg0) {
 
-        File[] files = getListOfSdCardFiles();
-
         for (LayoutInfo layout : lists) {
             if (layout.getType() == LayoutInfo.LayoutType.FRAME) {
                 for (SourceInfo sourceInfo : layout.getObjSource()) {
@@ -95,14 +91,14 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
                         for (int i = 0; i < sourceInfo.getArrSources().size(); i++) {
                             String source = sourceInfo.getArrSources().get(i);
                             String hash = sourceInfo.getArrHashes().get(i);
-                            downloadSourceData(files, source, hash);
+                            downloadSourceData(getListOfSdCardFiles(), source, hash);
                         }
                     } else if (sourceInfo.getType() != SourceInfo.SourceType.URL) {
-                        downloadSourceData(files, sourceInfo.getSource(), sourceInfo.getHash());
+                        downloadSourceData(getListOfSdCardFiles(), sourceInfo.getSource(), sourceInfo.getHash());
                     }
                 }
             } else {
-                downloadSourceData(files, layout.getAssets(), layout.getHash());
+                downloadSourceData(getListOfSdCardFiles(), layout.getAssets(), layout.getHash());
             }
         }
 
@@ -126,10 +122,13 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
     public boolean checkInvalidAndRemoveFile(String url, String hash) {
         boolean result = true;
 
+        //DebugLog.d("check hash :" + url + " - url MD5: " + hash);
         if (Constants.IS_HASH_CHECK_ENABLED) {
 
             if (!TextUtils.isEmpty(hash)
-                    && hash.equalsIgnoreCase(HashUtils.fileToMD5(url))) {
+                    && !hash.equalsIgnoreCase(HashUtils.fileToMD5(url))) {
+
+                DebugLog.d("check hash2 :" + url + " - url MD5: " + HashUtils.fileToMD5(url));
                 FileUtils.deleteFileInPath(url);
                 if (Config.hasLogLevel(LogLevel.DATA))
                     DebugLog.d("deleted file :" + url + " - url MD5: " + hash);
@@ -152,7 +151,7 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
     private File[] getListOfSdCardFiles() {
         final File file = new File(String.format(Config.OverallConfig.FOLDER_PATH, "media"));
         try {
-            DebugLog.d("media file in folder " + new Gson().toJson(file.listFiles()));
+//            DebugLog.d("media file in folder " + new Gson().toJson(file.listFiles()));
         } catch (Exception e) {
         }
         return file.listFiles();

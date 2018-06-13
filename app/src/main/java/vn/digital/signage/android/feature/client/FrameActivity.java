@@ -62,7 +62,7 @@ public class FrameActivity extends FragmentActivity {
 
     private void playSelectedFrame(List<SourceInfo> lists) {
         for (SourceInfo info : lists) {
-            FrameView frameLayout = new FrameView(this);
+            FrameView frameLayout = new FrameView(getApplicationContext());
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(info.getWidth(), info.getHeight());
             layoutParams.leftMargin = info.getLeft();
             layoutParams.topMargin = info.getTop();

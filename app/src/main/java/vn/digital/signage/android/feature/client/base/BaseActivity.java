@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import io.paperdb.Paper;
 import vn.digital.signage.android.R;
 import vn.digital.signage.android.app.App;
 import vn.digital.signage.android.app.Config;
@@ -48,6 +49,8 @@ public abstract class BaseActivity extends FragmentActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Paper.init(this);
 
         if (Config.hasLogLevel(LogLevel.UI))
             log.info("BaseActivity - onCreate");

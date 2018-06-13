@@ -1,6 +1,5 @@
 package vn.digital.signage.android.feature.client.home;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -106,7 +105,7 @@ public class FrameView extends FrameLayout {
 
         // setup webview
         webView = new AdvancedWebView(context);
-        webView.setListener((Activity) context, mOnWebViewListener);
+//        webView.setListener((Activity) context, mOnWebViewListener);
 
         imageView = new ImageView(context);
 
