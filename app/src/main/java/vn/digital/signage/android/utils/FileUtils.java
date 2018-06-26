@@ -148,4 +148,8 @@ public class FileUtils {
 
         return result;
     }
+
+    public static String getFileNameFromPath(String path){
+        return path.substring(path.lastIndexOf('/') + 1);
+    }
 }

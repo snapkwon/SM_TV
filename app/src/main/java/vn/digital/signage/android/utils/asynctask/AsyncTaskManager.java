@@ -43,14 +43,17 @@ public final class AsyncTaskManager implements IProgressTracker, OnCancelListene
     }
 
     public void showDialog(boolean isShow) {
-        if (mProgressDialog != null) {
-            if (isShow) {
-                mProgressDialog.show();
-            } else {
-                mProgressDialog.hide();
-                mProgressDialog.dismiss();
-                mProgressDialog = null;
+        try {
+            if (mProgressDialog != null) {
+                if (isShow) {
+                    mProgressDialog.show();
+                } else {
+                    mProgressDialog.hide();
+                    mProgressDialog.dismiss();
+                    mProgressDialog = null;
+                }
             }
+        } catch (Exception e) {
         }
     }
 

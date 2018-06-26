@@ -39,11 +39,13 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
 
     private Boolean mResult;
     private IProgressTracker mProgressTracker;
+    private SMRuntime runtime;
 
     /* UI Thread */
     public MediaDownloadTask(List<LayoutInfo> lists, SMRuntime runtime) {
         this.lists = lists;
         this.refUrl = runtime.getApiUrl();
+        this.runtime = runtime;
         this.prefFolderVideo = runtime.getFolderVideoPath();
     }
 
@@ -129,11 +131,12 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
                     && !hash.equalsIgnoreCase(HashUtils.fileToMD5(url))) {
 
                 DebugLog.d("check hash2 :" + url + " - url MD5: " + HashUtils.fileToMD5(url));
+                runtime.removeMediaDownloaded(FileUtils.getFileNameFromPath(url));
                 FileUtils.deleteFileInPath(url);
                 if (Config.hasLogLevel(LogLevel.DATA))
                     DebugLog.d("deleted file :" + url + " - url MD5: " + hash);
                 result = false;
-            }
+            } else runtime.putMediaDownloaded(FileUtils.getFileNameFromPath(url));
         }
         return result;
     }

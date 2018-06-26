@@ -48,7 +48,6 @@ import vn.digital.signage.android.media.IjkVideoView;
 import vn.digital.signage.android.utils.DateUtils;
 import vn.digital.signage.android.utils.DebugLog;
 import vn.digital.signage.android.utils.FileUtils;
-import vn.digital.signage.android.utils.HashUtils;
 import vn.digital.signage.android.utils.NetworkUtils;
 import vn.digital.signage.android.utils.asynctask.AsyncTaskManager;
 import vn.digital.signage.android.utils.asynctask.MediaDownloadTask;
@@ -308,20 +307,21 @@ public class HomeScreenView {
     }
 
     public boolean checkInvalidAndRemoveFile(String url, String hash) {
-        boolean result = true;
+//        boolean result = true;
+        return (runtime.getMediaDownloaded().contains(FileUtils.getFileNameFromPath(url)));
         //DebugLog.d("check hash :" + url + " - url MD5: " + hash);
-        if (Constants.IS_HASH_CHECK_ENABLED) {
-
-            if (!TextUtils.isEmpty(hash)
-                    && !hash.equalsIgnoreCase(HashUtils.fileToMD5(url))) {
-//                FileUtils.deleteFileInPath(url);
-                DebugLog.d("check hash2 :" + url + " - url MD5: " + HashUtils.fileToMD5(url));
-                if (Config.hasLogLevel(LogLevel.DATA))
-                    DebugLog.d("deleted file :" + url + " - url MD5: " + hash);
-                result = false;
-            }
-        }
-        return result;
+//        if (Constants.IS_HASH_CHECK_ENABLED) {
+//
+//            if (!TextUtils.isEmpty(hash)
+//                    && !hash.equalsIgnoreCase(HashUtils.fileToMD5(url))) {
+////                FileUtils.deleteFileInPath(url);
+//                DebugLog.d("check hash2 :" + url + " - url MD5: " + HashUtils.fileToMD5(url));
+//                if (Co    nfig.hasLogLevel(LogLevel.DATA))
+//                    DebugLog.d("deleted file :" + url + " - url MD5: " + hash);
+//                result = false;
+//            }
+//        }
+//        return result;
     }
 
     private void playDefaultAdvertiseMedia(final List<String> lists) {
@@ -353,7 +353,7 @@ public class HomeScreenView {
         final String url = homeController.getVideoAdvLocal();
         if (!TextUtils.isEmpty(url)) {
             // Cache file name
-            final String fileName = url.substring(url.lastIndexOf('/') + 1);
+            final String fileName = FileUtils.getFileNameFromPath(url);
             final String exp = url.substring(url.lastIndexOf('.') + 1);
 
             if (Arrays.asList(EXP_IMAGES_FILES).contains(exp.toUpperCase()))
@@ -563,6 +563,7 @@ public class HomeScreenView {
             //  call delete on SDCard
             if (!deleteFiles.isEmpty()) {
                 for (String src : deleteFiles) {
+                    runtime.removeMediaDownloaded(FileUtils.getFileNameFromPath(src));
                     FileUtils.deleteFileInPath(src, runtime.getFolderVideoPath());
                     if (Config.hasLogLevel(LogLevel.DATA))
                         log.debug("Starting delete file :" + src);

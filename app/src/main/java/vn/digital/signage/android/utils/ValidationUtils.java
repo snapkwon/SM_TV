@@ -2,6 +2,7 @@ package vn.digital.signage.android.utils;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -75,8 +76,7 @@ public class ValidationUtils {
                 url = "http://" + url;
             }
         }
-        Pattern urlPattern = Pattern.compile(URL_PATTERN,
-                Pattern.CASE_INSENSITIVE);
+        Pattern urlPattern = Patterns.WEB_URL;
         Matcher matcher = urlPattern.matcher(url);
         if (matcher.find())
             return true;

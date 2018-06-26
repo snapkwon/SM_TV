@@ -5,6 +5,9 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import vn.digital.signage.android.Constants;
 import vn.digital.signage.android.api.model.LayoutInfo;
 import vn.digital.signage.android.api.model.RegisterInfo;
@@ -22,6 +25,7 @@ public class SmSharedPreferenceRuntime {
     private String PREF_AUTO_PLAY_SCHEDULE = Utils.sha256("PREF_AUTO_PLAY_SCHEDULE");
     private String PREF_ON_OFF_TIMER = Utils.sha256("PREF_ON_OFF_TIMER");
     private String PREF_IS_DOWNLOADED = Utils.sha256("PREF_IS_DOWNLOADED");
+    private String PREF_MEDIA_DOWNLOADED = Utils.sha256("PREF_MEDIA_DOWNLOADED");
 
     private ObscuredSharedPreferences mPref;
     private Context mContext;
@@ -199,6 +203,14 @@ public class SmSharedPreferenceRuntime {
 
     public void setPlaylistDownloaded(boolean isFetched) {
         mPref.edit().putBoolean(PREF_IS_DOWNLOADED, isFetched).commit();
+    }
+
+    public Set<String> getMediaDownloaded() {
+        return mPref.getStringSet(PREF_IS_DOWNLOADED, new HashSet<String>());
+    }
+
+    public void setMediaDownloaded(Set<String> mediaDownloaded) {
+        mPref.edit().putStringSet(PREF_IS_DOWNLOADED, mediaDownloaded).commit();
     }
 
     public AutoPlayResponse getAutoPlaySchedule() {

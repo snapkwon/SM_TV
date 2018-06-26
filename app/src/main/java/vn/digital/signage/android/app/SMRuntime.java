@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 
 import org.apache.log4j.Logger;
 
+import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -78,6 +80,26 @@ public class SMRuntime {
         data.setOnOffTimerResponse(mSpRuntime.getOnOffTimer());
 
         DataExecutor.saveData(data);
+    }
+
+    public void putMediaDownloaded(String media) {
+        Set<String> strings = getMediaDownloaded();
+        strings.add(media);
+        setMediaDownloaded(strings);
+    }
+
+    public void removeMediaDownloaded(String media) {
+        Set<String> strings = getMediaDownloaded();
+        strings.remove(media);
+        setMediaDownloaded(strings);
+    }
+
+    public Set<String> getMediaDownloaded() {
+        return mSpRuntime.getMediaDownloaded();
+    }
+
+    public void setMediaDownloaded(Set<String> mediaDownloaded) {
+        mSpRuntime.setMediaDownloaded(mediaDownloaded);
     }
 
     public RegisterInfo getRegisterInfo() {
