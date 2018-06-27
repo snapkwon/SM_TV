@@ -116,6 +116,8 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
                 DebugLog.d(String.format("Start download media: %s", source));
             }
             downloadMultiVideo(String.format(Config.OverallConfig.LINK_DOWNLOAD, refUrl, source));
+            String folder = String.format(Config.OverallConfig.FOLDER_PATH, prefFolderVideo) + "/" + source;
+            checkInvalidAndRemoveFile(folder, hash);
         } else if (log.isDebugEnabled()) {
             DebugLog.d(String.format("exist download media: %s", source));
         }
@@ -159,6 +161,9 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
         }
         return file.listFiles();
     }
+
+//    static boolean isFakeInterupt = true;
+//    long firstTimeDownload;
 
     private boolean downloadMultiVideo(String downloadUrl) {
         boolean result = false;
@@ -210,7 +215,10 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
             // this will be useful to display download percentage
             // might be -1: server did not report the length
             int fileLength = conn.getContentLength();
-
+//
+//            if( isFakeInterupt){
+//                firstTimeDownload = System.currentTimeMillis();
+//            }
 
             while ((bytesRead = inStream.read(data, 0, data.length)) >= 0) {
                 outStream.write(data, 0, bytesRead);
@@ -219,6 +227,11 @@ public final class MediaDownloadTask extends AsyncTask<Void, String, Boolean> {
 
                 if (fileLength > 0) // only if total length is known
                     publishProgress(String.valueOf((int) (totalRead * 100 / fileLength)));
+
+//                if(isFakeInterupt && System.currentTimeMillis() - firstTimeDownload > 3000){
+//                    isFakeInterupt = false;
+//                    break;
+//                }
             }
 
             //outStream.close();

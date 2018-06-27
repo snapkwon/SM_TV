@@ -5,8 +5,6 @@ import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.gson.Gson;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,7 +13,6 @@ import java.io.OutputStream;
 
 import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.feature.client.home.HomeController;
-import vn.digital.signage.android.utils.DebugLog;
 
 public class CopyAssetToSd extends AsyncTask<Void, Void, String> {
 
@@ -93,10 +90,10 @@ public class CopyAssetToSd extends AsyncTask<Void, Void, String> {
 
     private File[] getListOfSdCardFiles() {
         final File file = new File(String.format(Config.OverallConfig.FOLDER_PATH, "assets"));
-        try {
-            DebugLog.d("media file in folder " + new Gson().toJson(file.listFiles()));
-        } catch (Exception e) {
-        }
+//        try {
+//            DebugLog.d("media file in folder " + new Gson().toJson(file.listFiles()));
+//        } catch (Exception e) {
+//        }
         return file.listFiles();
     }
 

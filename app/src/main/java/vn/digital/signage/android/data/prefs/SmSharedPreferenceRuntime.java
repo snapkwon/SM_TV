@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -206,11 +207,21 @@ public class SmSharedPreferenceRuntime {
     }
 
     public Set<String> getMediaDownloaded() {
-        return mPref.getStringSet(PREF_IS_DOWNLOADED, new HashSet<String>());
+        String value = mPref.getString(PREF_MEDIA_DOWNLOADED, "");
+        String[] sets = value.split(",");
+        Set<String> stringSet = new HashSet<>();
+        stringSet.addAll(Arrays.asList(sets));
+        return stringSet;
     }
 
     public void setMediaDownloaded(Set<String> mediaDownloaded) {
-        mPref.edit().putStringSet(PREF_IS_DOWNLOADED, mediaDownloaded).commit();
+        String value = "";
+        for (String str : mediaDownloaded) {
+            value += str + ",";
+        }
+        if (!TextUtils.isEmpty(value))
+            value = value.substring(0, value.length() - 1);
+        mPref.edit().putString(PREF_MEDIA_DOWNLOADED, value).commit();
     }
 
     public AutoPlayResponse getAutoPlaySchedule() {

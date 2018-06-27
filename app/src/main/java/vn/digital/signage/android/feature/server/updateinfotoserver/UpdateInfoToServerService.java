@@ -54,8 +54,9 @@ public class UpdateInfoToServerService extends BaseService {
     }
 
     public void cancelTimer() {
-        timer.cancel();
-        ;
+        if (timer != null) {
+            timer.cancel();
+        }
     }
 
     public static class SingletonService {

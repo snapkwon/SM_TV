@@ -117,13 +117,13 @@ public class HomeScreenView {
         public void onTaskComplete(MediaDownloadTask task) {
             if (task != null) {
                 if (task.isCancelled()) {
-                    if (Config.hasLogLevel(LogLevel.DATA))
-                        log.info("The download cancelled ...");
+//                    if (Config.hasLogLevel(LogLevel.DATA))
+                        DebugLog.d("The download cancelled ...");
                     // Report about cancel
                     displayMessage("The download process has been ignored.");
                 } else {
-                    if (Config.hasLogLevel(LogLevel.DATA))
-                        log.info("The download finished.");
+//                    if (Config.hasLogLevel(LogLevel.DATA))
+                        DebugLog.d("The download finished.");
 
                     if (mContext != null && mContext.getActivity() != null) {
 
@@ -340,6 +340,8 @@ public class HomeScreenView {
                 if (mCurrentMediaList != null && !mCurrentMediaList.isEmpty())
                     playSelectedMediaFile(mCurrentMediaList);
                 else playMedia0(0);
+
+                startMultiDownload(getCurrentResponse().getLayouts());
             } else {
                 // play video list
                 DebugLog.d("valid layout");
@@ -371,9 +373,6 @@ public class HomeScreenView {
             String url = "";
             if (info.getType() == SourceInfo.SourceType.VIDEO) {
                 url = getMediaFile(info.getSource());
-                boolean isValidHashFile = mHashFileChecker.checkInvalidAndRemoveFile(url);
-                if (!isValidHashFile)
-                    continue;
             } else if (info.getType() == SourceInfo.SourceType.IMAGE) {
                 url = getMediaFile(info.getSource());
             } else if (info.getType() == SourceInfo.SourceType.VIDEO_LIST) {
@@ -386,6 +385,7 @@ public class HomeScreenView {
             info.setSource(url);
         }
         Intent intent = new Intent(HomeFragment.mActivity, FrameActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("source", (Serializable) lists);
         intent.putExtra("duration", getImageDurationFromIndex(mCurrentMediaIndex));
         updateMediaVisibility(MediaType.FRAME);
