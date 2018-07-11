@@ -22,6 +22,8 @@ public class SourceInfo implements Serializable {
         URL("url"),
         @SerializedName("image")
         IMAGE("image"),
+        @SerializedName("web")
+        WEB("web"),
         UNKNOWN("");
 
         private String type;

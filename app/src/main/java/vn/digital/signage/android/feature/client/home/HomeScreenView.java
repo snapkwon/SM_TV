@@ -60,7 +60,7 @@ import vn.digital.signage.android.utils.hash.HashFileCheckerImpl;
 public class HomeScreenView {
 
     private static final String TAG = HomeScreenView.class.getSimpleName();
-    private static final String[] SUPPORT_FILES = new String[]{"MP4", "MP3", "JPG", "JPEG", "PNG"};
+    private static final String[] SUPPORT_FILES = new String[]{"MP4", "MP3", "JPG", "JPEG", "PNG", "HTML"};
     private static final String[] EXP_IMAGES_FILES = new String[]{"JPG", "JPEG", "PNG"};
     private static final String[] EXP_WEBVIEW_FILES = new String[]{"HTML", "HTM", "ASPX"};
 
@@ -118,12 +118,12 @@ public class HomeScreenView {
             if (task != null) {
                 if (task.isCancelled()) {
 //                    if (Config.hasLogLevel(LogLevel.DATA))
-                        DebugLog.d("The download cancelled ...");
+                    DebugLog.d("The download cancelled ...");
                     // Report about cancel
                     displayMessage("The download process has been ignored.");
                 } else {
 //                    if (Config.hasLogLevel(LogLevel.DATA))
-                        DebugLog.d("The download finished.");
+                    DebugLog.d("The download finished.");
 
                     if (mContext != null && mContext.getActivity() != null) {
 
@@ -371,17 +371,26 @@ public class HomeScreenView {
         for (SourceInfo info : lists) {
 //            DebugLog.d(info.getSource() + "|");
             String url = "";
-            if (info.getType() == SourceInfo.SourceType.VIDEO) {
-                url = getMediaFile(info.getSource());
-            } else if (info.getType() == SourceInfo.SourceType.IMAGE) {
-                url = getMediaFile(info.getSource());
-            } else if (info.getType() == SourceInfo.SourceType.VIDEO_LIST) {
+//            if (info.getType() == SourceInfo.SourceType.VIDEO) {
+//                url = getMediaFile(info.getSource());
+//            } else if (info.getType() == SourceInfo.SourceType.IMAGE) {
+//                url = getMediaFile(info.getSource());
+//            } else if (info.getType() == SourceInfo.SourceType.WEB) {
+//                url = getMediaFile(info.getSource());
+//            } else
+            if (info.getType() == SourceInfo.SourceType.VIDEO_LIST) {
                 for (int i = 0; i < info.getArrSources().size(); i++) {
                     String source = info.getArrSources().get(i);
                     source = getMediaFile(source);
                     info.getArrSources().set(i, source);
                 }
-            } else url = info.getSource();
+            }
+//            else if (info.getType() == SourceInfo.SourceType.WEB)
+//                url = getMediaFile(info.getSource());
+            else if (info.getType() != SourceInfo.SourceType.URL)
+                url = getMediaFile(info.getSource());
+            else
+                url = info.getSource();
             info.setSource(url);
         }
         Intent intent = new Intent(HomeFragment.mActivity, FrameActivity.class);
@@ -626,7 +635,7 @@ public class HomeScreenView {
             for (LayoutInfo l : listLayouts) {
                 if (l.getType() == LayoutInfo.LayoutType.FRAME) {
 //                    if (isFrameHasData(links, l))
-                        listLinks.add("FRAME");
+                    listLinks.add("FRAME");
 //                    DebugLog.d("Frame");
                 } else
                     for (String s : links) {

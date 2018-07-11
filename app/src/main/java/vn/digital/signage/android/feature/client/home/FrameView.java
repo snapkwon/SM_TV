@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Patterns;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -20,7 +21,6 @@ import vn.digital.signage.android.api.model.SourceInfo;
 import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.media.IjkVideoView;
 import vn.digital.signage.android.utils.DebugLog;
-import vn.digital.signage.android.utils.NetworkUtils;
 import vn.digital.signage.android.utils.enumeration.LogLevel;
 import vn.digital.signage.android.utils.enumeration.MediaType;
 import vn.digital.signage.android.utils.hash.HashFileChecker;
@@ -125,21 +125,21 @@ public class FrameView extends FrameLayout {
                 addView(imageView, params);
             }
             playImageMedia(url, fileName, 0); // play image file
-        } else if (sourceInfo.getType() == SourceInfo.SourceType.URL) {
-            if (NetworkUtils.checkInternetConnection()) {
-                if (getChildCount() == 0) {
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-                    addView(webView, params);
-                    playWebViewMedia(url, fileName, 0); // play webview url
-                }
-            } else {
-                if (getChildCount() == 0) {
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-                    addView(exoVideoView, params);
-                }
-                if (!TextUtils.isEmpty(HomeController.LOCAL_VIDEO_PATH))
-                    playVideoMedia(HomeController.LOCAL_VIDEO_PATH, fileName, 0); // play video file
+        } else if (sourceInfo.getType() == SourceInfo.SourceType.URL || sourceInfo.getType() == SourceInfo.SourceType.WEB) {
+//            if (NetworkUtils.checkInternetConnection()) {
+            if (getChildCount() == 0) {
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                addView(webView, params);
+                playWebViewMedia(url, fileName, 0); // play webview url
             }
+//            } else {
+//                if (getChildCount() == 0) {
+//                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+//                    addView(exoVideoView, params);
+//                }
+//                if (!TextUtils.isEmpty(HomeController.LOCAL_VIDEO_PATH))
+//                    playVideoMedia(HomeController.LOCAL_VIDEO_PATH, fileName, 0); // play video file
+//            }
         } else {
             if (getChildCount() == 0) {
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -196,7 +196,16 @@ public class FrameView extends FrameLayout {
     }
 
     private void playWebViewMedia(String url, String fileName, int urlIndex) {
+        if (!Patterns.WEB_URL.matcher(url).matches())
+            url = "file://" + url;
         webView.loadUrl(url);
+
+        webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setAllowFileAccessFromFileURLs(true);
+        webView.getSettings().setAllowContentAccess(true);
+
+
 
         updateMediaVisibility(MediaType.WEB_VIEW);
     }
