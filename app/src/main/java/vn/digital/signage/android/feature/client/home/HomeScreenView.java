@@ -716,7 +716,7 @@ public class HomeScreenView {
                 for (SourceInfo sourceInfo : info.getObjSource()) {
                     if (sourceInfo.getType() == SourceInfo.SourceType.VIDEO_LIST) {
                         for (String source : sourceInfo.getArrSources()) {
-                            String exp = source.substring(sourceInfo.getSource().lastIndexOf('.') + 1);
+                            String exp = source.substring(source.lastIndexOf('.') + 1);
                             if (Arrays.asList(SUPPORT_FILES).contains(exp.toUpperCase())) {
                                 files.add(source);
                             }
@@ -964,7 +964,6 @@ public class HomeScreenView {
     }
 
     public void onActivityResult() {
-        DebugLog.d("onActivityResult");
         playDefaultAdvertiseMedia(getMediaFileList());
     }
 

@@ -21,7 +21,6 @@ import vn.digital.signage.android.feature.client.RootActivity;
 import vn.digital.signage.android.feature.client.home.HomeFragment;
 import vn.digital.signage.android.feature.client.registration.RegisterFragment;
 import vn.digital.signage.android.feature.device.startappinspecifictime.StartAppInSpecificTimeReceiver;
-import vn.digital.signage.android.utils.DebugLog;
 import vn.digital.signage.android.utils.enumeration.LogLevel;
 import vn.digital.signage.android.utils.foreground.Foreground;
 import vn.digital.signage.android.utils.security.AutoOnOffScreenHelper;
@@ -92,7 +91,7 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            DebugLog.d(" onActivityResult 1" + mFragmentHelper.getActiveFragment(null) + "|" + fragment);
+//            DebugLog.d(" onActivityResult 1" + mFragmentHelper.getActiveFragment(null) + "|" + fragment);
             BaseFragment homeFragment = (BaseFragment) mFragmentHelper.getActiveFragment(null);
             if (homeFragment != null) {
                 homeFragment.onActivityResult(requestCode, resultCode, data);

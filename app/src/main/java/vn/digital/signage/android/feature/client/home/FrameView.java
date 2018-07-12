@@ -7,6 +7,10 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Patterns;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -18,12 +22,9 @@ import java.util.List;
 import im.delight.android.webview.AdvancedWebView;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import vn.digital.signage.android.api.model.SourceInfo;
-import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.media.IjkVideoView;
 import vn.digital.signage.android.utils.DebugLog;
-import vn.digital.signage.android.utils.enumeration.LogLevel;
 import vn.digital.signage.android.utils.enumeration.MediaType;
-import vn.digital.signage.android.utils.hash.HashFileChecker;
 
 public class FrameView extends FrameLayout {
 
@@ -34,53 +35,11 @@ public class FrameView extends FrameLayout {
     private final Logger log = Logger.getLogger(FrameView.class);
     IjkVideoView exoVideoView;
     ImageView imageView;
-    AdvancedWebView webView;
+    WebView webView;
 
     private Handler mHandler = new Handler();
-    private HashFileChecker mHashFileChecker;
     private int mediaTypeVisibility;
 
-    private AdvancedWebView.Listener mOnWebViewListener = new AdvancedWebView.Listener() {
-        @Override
-        public void onPageStarted(String url, Bitmap favicon) {
-            if (Config.hasLogLevel(LogLevel.UI)) {
-                log.info("mOnWebViewListener - onPageStarted");
-            }
-        }
-
-        @Override
-        public void onPageFinished(String url) {
-            if (Config.hasLogLevel(LogLevel.UI)) {
-                log.info("mOnWebViewListener - onPageFinished");
-            }
-        }
-
-        @Override
-        public void onPageError(int errorCode, String description, String failingUrl) {
-            if (Config.hasLogLevel(LogLevel.UI)) {
-                log.info("mOnWebViewListener - onPageError");
-            }
-        }
-
-        @Override
-        public void onDownloadRequested(String url,
-                                        String suggestedFilename,
-                                        String mimeType,
-                                        long contentLength,
-                                        String contentDisposition,
-                                        String userAgent) {
-            if (Config.hasLogLevel(LogLevel.UI)) {
-                log.info("mOnWebViewListener - onDownloadRequested");
-            }
-        }
-
-        @Override
-        public void onExternalPageRequest(String url) {
-            if (Config.hasLogLevel(LogLevel.UI)) {
-                log.info("mOnWebViewListener - onExternalPageRequest");
-            }
-        }
-    };
 
     public FrameView(Context context) {
         super(context);
@@ -198,14 +157,31 @@ public class FrameView extends FrameLayout {
     private void playWebViewMedia(String url, String fileName, int urlIndex) {
         if (!Patterns.WEB_URL.matcher(url).matches())
             url = "file://" + url;
-        webView.loadUrl(url);
 
         webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowFileAccessFromFileURLs(true);
         webView.getSettings().setAllowContentAccess(true);
 
+        webView.setWebViewClient(new WebViewClient(){
 
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+
+                return true;
+            }
+            @Override
+            public void onPageFinished(WebView view, final String url) {
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                DebugLog.d("onReceivedError");
+            }
+        });
+        webView.loadUrl(url);
 
         updateMediaVisibility(MediaType.WEB_VIEW);
     }
