@@ -25,9 +25,11 @@ import vn.digital.signage.android.app.SMRuntime;
 import vn.digital.signage.android.feature.client.base.BaseActivity;
 import vn.digital.signage.android.feature.client.base.BaseFragment;
 import vn.digital.signage.android.feature.server.updateinfotoserver.UpdateInfoToServerEvent;
+import vn.digital.signage.android.utils.DebugLog;
 import vn.digital.signage.android.utils.UiUtils;
 import vn.digital.signage.android.utils.autoplay.AutoPlayHelper;
 import vn.digital.signage.android.utils.enumeration.LogLevel;
+import vn.digital.signage.android.utils.enumeration.MediaType;
 
 public class HomeFragment extends BaseFragment {
 
@@ -100,6 +102,15 @@ public class HomeFragment extends BaseFragment {
         super.onAttach(context);
         instance = this;
         mActivity = (BaseActivity) getActivity();
+    }
+
+    @Override
+    public void onDestroy() {
+        DebugLog.d("onDestroy");
+        if (homeView != null) {
+            homeView.updateMediaVisibility(MediaType.CLEAR);//clear all data
+        }
+        super.onDestroy();
     }
 
     @Override

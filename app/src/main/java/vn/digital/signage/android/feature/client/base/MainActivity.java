@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.WindowManager;
@@ -41,7 +42,8 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onBecameBackground() {
-            MainActivity.this.finish();
+            ActivityCompat.finishAffinity(MainActivity.this);
+//            MainActivity.this.finish();
 
             if (Config.hasLogLevel(LogLevel.UI))
                 logger.info("BaseActivity - onBackground");

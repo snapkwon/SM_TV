@@ -415,13 +415,15 @@ public class HomeScreenView {
 
         mMediaList.addAll(lists);
         try {
-            if (mMediaList.size() > 1 && mCurrentUrl.equals(mMediaList.get(mCurrentMediaIndex)))
-                return;// avoid play multiple times
+//            DebugLog.d(new Gson().toJson(mMediaList) + "|" + mCurrentUrl);
+//            if (mMediaList.size() > 1 && mCurrentUrl.equals(mMediaList.get(mCurrentMediaIndex)))
+//                return;// avoid play multiple times
 
 //            DebugLog.d("media list " + new Gson().toJson(mMediaList));
 
             DebugLog.d("on play index " + mCurrentMediaIndex + " |" + mMediaList.get(mCurrentMediaIndex));
         } catch (Exception e) {
+            e.printStackTrace();
             setmCurrentMediaIndex((mCurrentMediaIndex + 1) % mMediaList.size());
             return;
         }
@@ -445,7 +447,7 @@ public class HomeScreenView {
                     return;
                 }
             }
-            DebugLog.d("on play media " + mCurrentMediaIndex + " |" + mMediaList.get(mCurrentMediaIndex));
+//            DebugLog.d("on play media " + mCurrentMediaIndex + " |" + mMediaList.get(mCurrentMediaIndex));
             final String url = mMediaList.get(mCurrentMediaIndex);
             final int currentUrlIndex = mCurrentMediaIndex;
 
@@ -762,7 +764,7 @@ public class HomeScreenView {
         return duration;
     }
 
-    private void updateMediaVisibility(final @MediaType int mediaTypeVisibility) {
+    public void updateMediaVisibility(final @MediaType int mediaTypeVisibility) {
         switch (mediaTypeVisibility) {
             case MediaType.IMAGE:
                 imageView.setVisibility(View.VISIBLE);
@@ -797,13 +799,22 @@ public class HomeScreenView {
                 frameView.setVisibility(View.VISIBLE);
                 break;
             case MediaType.VIDEO:
-            default:
                 imageView.setVisibility(View.INVISIBLE);
                 hideFrameView();
                 webView.setVisibility(View.INVISIBLE);
                 webView.clearCache(true);
                 exoVideoView.setVisibility(View.VISIBLE);
                 break;
+            default:
+
+                imageView.setVisibility(View.INVISIBLE);
+                hideFrameView();
+                webView.setVisibility(View.INVISIBLE);
+                webView.clearCache(true);
+                exoVideoView.stopPlayback();
+                exoVideoView.release(true);
+                exoVideoView.stopBackgroundPlay();
+
         }
     }
 
