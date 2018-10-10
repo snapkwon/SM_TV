@@ -9,7 +9,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -282,7 +287,8 @@ public class HomeScreenView {
 
         for (int i = 0; i < response.getLayouts().size(); i++) {
             LayoutInfo layoutInfo = response.getLayouts().get(i);
-            if (layoutInfo.getType() == LayoutInfo.LayoutType.VIDEO || layoutInfo.getType() == LayoutInfo.LayoutType.IMAGE) {
+            if (layoutInfo.getType() == LayoutInfo.LayoutType.VIDEO || layoutInfo.getType() == LayoutInfo.LayoutType.IMAGE
+                    || layoutInfo.getType() == LayoutInfo.LayoutType.URL) {
                 if (!lists.get(i).contains(layoutInfo.getAssets()) || !checkInvalidAndRemoveFile(lists.get(i), layoutInfo.getHash()))
                     return false;
             } else if (layoutInfo.getType() == LayoutInfo.LayoutType.FRAME) {
@@ -539,7 +545,37 @@ public class HomeScreenView {
     }
 
     private void playWebViewMedia(String url, String fileName, int urlIndex) {
+
+        if (!Patterns.WEB_URL.matcher(url).matches())
+            url = "file://" + url;
+
+        webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setAllowFileAccessFromFileURLs(true);
+        webView.getSettings().setAllowContentAccess(true);
+
+        webView.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+
+                return true;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, final String url) {
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                DebugLog.d("onReceivedError");
+            }
+        });
         webView.loadUrl(url);
+
+        updateMediaVisibility(MediaType.WEB_VIEW);
 
         runtime.setMediaFileNameOn(fileName);
 

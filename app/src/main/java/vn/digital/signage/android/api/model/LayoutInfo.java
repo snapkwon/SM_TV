@@ -11,6 +11,8 @@ public class LayoutInfo {
         IMAGE(1),
         @SerializedName("2")
         VIDEO(2),
+        @SerializedName("3")
+        URL(2),
         @SerializedName("5")
         FRAME(5),
         UNKNOWN(-1);

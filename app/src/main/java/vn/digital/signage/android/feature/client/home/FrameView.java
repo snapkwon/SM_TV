@@ -3,6 +3,7 @@ package vn.digital.signage.android.feature.client.home;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -17,13 +18,16 @@ import android.widget.RelativeLayout;
 
 import org.apache.log4j.Logger;
 
+import java.util.Arrays;
 import java.util.List;
 
 import im.delight.android.webview.AdvancedWebView;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import vn.digital.signage.android.api.model.SourceInfo;
+import vn.digital.signage.android.app.Config;
 import vn.digital.signage.android.media.IjkVideoView;
 import vn.digital.signage.android.utils.DebugLog;
+import vn.digital.signage.android.utils.enumeration.LogLevel;
 import vn.digital.signage.android.utils.enumeration.MediaType;
 
 public class FrameView extends FrameLayout {
@@ -39,6 +43,8 @@ public class FrameView extends FrameLayout {
 
     private Handler mHandler = new Handler();
     private int mediaTypeVisibility;
+    private List<String> sources;
+    private ImageCountDownTimer mCountDownTimer;
 
 
     public FrameView(Context context) {
@@ -103,9 +109,16 @@ public class FrameView extends FrameLayout {
             if (getChildCount() == 0) {
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
                 addView(exoVideoView, params);
+                addView(imageView, params);
+
+//                exoVideoView.setVisibility(GONE);
+//                imageView.setVisibility(GONE);
             }
             if (sourceInfo.getType() == SourceInfo.SourceType.VIDEO_LIST)
-                playVideoListMedia(sourceInfo.getArrSources());
+            {
+                sources = sourceInfo.getArrSources();
+                playVideoListMedia();
+            }
             else
                 playVideoMedia(url, fileName, 0); // play video file
         }
@@ -113,26 +126,50 @@ public class FrameView extends FrameLayout {
 
     private int mCurrentIndex = 0;
 
-    private void playVideoListMedia(final List<String> sources) {
+    private void playVideoListMedia() {
         if (sources != null && !sources.isEmpty()) {
             DebugLog.d("media list " + sources.get(mCurrentIndex));
 
-            if (!TextUtils.isEmpty(sources.get(mCurrentIndex))) {
-                exoVideoView.setVideoPath(sources.get(mCurrentIndex));
-                mCurrentIndex++;
-                mCurrentIndex = mCurrentIndex % sources.size();
-            } else {
-                mCurrentIndex++;
-                mCurrentIndex = mCurrentIndex % sources.size();
-                playVideoListMedia(sources);
-            }
-            exoVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(IMediaPlayer iMediaPlayer) {
-                    playVideoListMedia(sources);
+            String url = sources.get(mCurrentIndex);
+            mCurrentIndex++;
+            mCurrentIndex = mCurrentIndex % sources.size();
+            if (!TextUtils.isEmpty(url)) {
+                String exp = url.substring(url.lastIndexOf('.') + 1);
+
+                if (Arrays.asList(EXP_IMAGES_FILES).contains(exp.toUpperCase())) {
+                    imageView.setVisibility(VISIBLE);
+//                    exoVideoView.setVisibility(GONE);
+                    Bitmap bmp = BitmapFactory.decodeFile(url);
+                    imageView.setImageBitmap(bmp);
+
+
+                    long imageDuration = 7000;
+                    // setup start time of the image
+//                    mCurrentImageStartTimeInMillis = System.currentTimeMillis();
+
+                    // destroy current count down timer
+                    if (mCountDownTimer != null && mCountDownTimer.isRunning()) {
+                        mCountDownTimer.cancel();
+                        mCountDownTimer = null;
+                    }
+                    mCountDownTimer = new ImageCountDownTimer(imageDuration, 1000, url);
+                    mCountDownTimer.start();
+                } else {
+                    exoVideoView.setVideoPath(url);
+//                    exoVideoView.setVisibility(VISIBLE);
+                    imageView.setVisibility(GONE);
+
+                    exoVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(IMediaPlayer iMediaPlayer) {
+                            playVideoListMedia();
+                        }
+                    });
+                    exoVideoView.start();
                 }
-            });
-            exoVideoView.start();
+            } else {
+                playVideoListMedia();
+            }
         }
 
         updateMediaVisibility(MediaType.VIDEO);
@@ -140,6 +177,7 @@ public class FrameView extends FrameLayout {
 
     private void playVideoMedia(String url, final String fileName, int urlIndex) {
 
+        exoVideoView.setVisibility(VISIBLE);
         exoVideoView.setVideoPath(url);
         exoVideoView.start();
 
@@ -163,7 +201,7 @@ public class FrameView extends FrameLayout {
         webView.getSettings().setAllowFileAccessFromFileURLs(true);
         webView.getSettings().setAllowContentAccess(true);
 
-        webView.setWebViewClient(new WebViewClient(){
+        webView.setWebViewClient(new WebViewClient() {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -171,6 +209,7 @@ public class FrameView extends FrameLayout {
 
                 return true;
             }
+
             @Override
             public void onPageFinished(WebView view, final String url) {
             }
@@ -223,6 +262,43 @@ public class FrameView extends FrameLayout {
                 break;
         }
         removeAllViews();
+
+        // destroy current count down timer
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+            mCountDownTimer = null;
+        }
     }
 
+    private class ImageCountDownTimer extends CountDownTimer {
+        protected boolean mIsRunning;
+        private final String fileName;
+
+        ImageCountDownTimer(long millisInFuture, long countDownInterval, String fileName) {
+            super(millisInFuture, countDownInterval);
+            this.fileName = fileName;
+        }
+
+        boolean isRunning() {
+            return mIsRunning;
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            mIsRunning = true;
+        }
+
+        @Override
+        public void onFinish() {
+            try {
+                mIsRunning = false;
+            } catch (Exception e) {
+                if (Config.hasLogLevel(LogLevel.DATA))
+                    log.error("Error start video by list", e);
+            } finally {
+                playVideoListMedia();
+            }
+        }
+
+    }
 }
